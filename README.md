@@ -10,7 +10,9 @@ Quick tip: We put things in the query params if it has a @RequestParam in the co
 5. The requestparam is what you will see in the url/link. Anything that is not specified as a requrestparam cannot be put in the params section.
 6. When you put the key and value in the params, you will see that the url will automatically change to http://localhost:8080/signUp?email=test&password=passwordtest where "email" and "password" are the keys and the things after the "=" being the value
 7. In the Body section, select the raw option and choose JSON from the dropdown.
-8. Enter the JSON data for signing up a user (This the data that we have in the user class). For example:\
+8. The format for what we put in the body section is in key:value format where the key is the variables in the user class.
+9. The only things that can be placed in the body with the key:value pair format is what is placed in the User class. If we want to save anything else, we have to add it to the User class. However, we do not have to put every variable if we dont want to as if we dont they will just be saved as the a key with a null value
+10. Enter the JSON data for signing up a user (This the data that we have in the user class). For example:
    ```json
    {
     "phoneNumber": "+1234567890"
@@ -19,8 +21,7 @@ Quick tip: We put things in the query params if it has a @RequestParam in the co
     "address": "123 Main St"
     ...(Any additional key value pair)
    }
-10. Anything that is placed in the body will not be visible in the URL. Only the server and the params will be visible in the URL.
-11. The only things that can be placed in the body with the key:value pair format is what is placed in the User class. If we want to save anything else, we have to add it to the User class
+11. Anything that is placed in the body will not be visible in the URL. Only the server and the params will be visible in the URL.
 
 ## Using postman to get the user
 1. Set the request type to GET (Can be used if we use the @GetMapping which is used to get something).
