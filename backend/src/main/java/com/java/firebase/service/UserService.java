@@ -1,10 +1,7 @@
 package com.java.firebase.service;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
@@ -61,34 +58,21 @@ public class UserService {
         }
     }
 
-    public User getUser(String userID) throws ExecutionException, InterruptedException {
+    public User getUser(String uid) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference documentReference = dbFirestore.collection("Users").document(userID);
-        ApiFuture<DocumentSnapshot> future = documentReference.get();
+        DocumentReference docRef = dbFirestore.collection("Users").document(uid);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+
         DocumentSnapshot document = future.get();
-        User user;
-        if(document.exists()) {
-            user = document.toObject(User.class);
-            return user;
-        }
-        return null;
-    }
-
-    public String updateUser(User user) throws ExecutionException, InterruptedException {
-        try {
-            Firestore dbFirestore = FirestoreClient.getFirestore();
-            String uid = user.getUserRecord().getUid();
-            ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("Users").document(uid).set(user);
-            return collectionsApiFuture.get().getUpdateTime().toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Error updating user: " + e.getMessage();
+        if (document.exists()) {
+            return document.toObject(User.class);
+        } else {
+            return null; // User not found
         }
     }
 
-    public String deleteUser(String userID) {
+    public void updateUser(String uid, User newUser) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> writeResult = dbFirestore.collection("Users").document(userID).delete();
-        return "Successfully deleted " + userID;
+        ApiFuture<WriteResult> future = dbFirestore.collection("Users").document(uid).set(newUser, SetOptions.merge());
     }
 }

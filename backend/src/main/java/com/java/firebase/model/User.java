@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class User {
-    private final UserRecord userRecord;
     // Getters and Setters for additional fields
     private String phoneNumber;
     private String token;
@@ -19,19 +18,15 @@ public class User {
     private Boolean is2FAEnabled;
     private Boolean isPhoneNumberVerified;
 
+    public User() {
+    }
+
     // Constructor
-    public User(UserRecord userRecord, String phoneNumber, String firstName, String lastName, String address) {
-        this.userRecord = userRecord;
+    public User(String phoneNumber, String firstName, String lastName, String address) {
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
-        is2FAEnabled = true;
-        isPhoneNumberVerified = false;
-    }
-
-    public User(UserRecord userRecord) {
-        this.userRecord = userRecord;
         is2FAEnabled = true;
         isPhoneNumberVerified = false;
     }
@@ -69,9 +64,6 @@ public class User {
     }
 
     // Get the underlying UserRecord
-    public UserRecord getUserRecord() {
-        return userRecord;
-    }
 
     public Boolean getIs2FAEnabled() {
         return is2FAEnabled;

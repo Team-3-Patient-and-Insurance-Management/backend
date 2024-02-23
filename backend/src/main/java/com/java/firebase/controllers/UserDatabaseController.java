@@ -2,6 +2,7 @@ package com.java.firebase.controllers;
 
 import com.java.firebase.model.User;
 import com.java.firebase.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,18 +29,29 @@ public class UserDatabaseController {
     }
 
     @GetMapping("/getUser")
-    public User getUser(@RequestParam String userID) throws ExecutionException, InterruptedException {
-        return userService.getUser(userID);
+    public ResponseEntity<User> getUser(@RequestParam String userID) {
+        try {
+            User user = userService.getUser(userID);
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PutMapping("/updateUser")
-    public String updateUser(@RequestBody User user) throws ExecutionException, InterruptedException {
-        return userService.updateUser(user);
-    }
-
-    @PutMapping("/deleteUser")
-    public String deleteUser(@RequestParam String userID) throws ExecutionException, InterruptedException {
-        return userService.deleteUser(userID);
+    public ResponseEntity<String> updateUser(@RequestParam String userID, @RequestBody User newUser) {
+        try {
+            userService.updateUser(userID, newUser);
+            return ResponseEntity.ok("User updated successfully");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user: " + e.getMessage());
+        }
     }
 
     @GetMapping("/testUser")
