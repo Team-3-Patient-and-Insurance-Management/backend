@@ -22,7 +22,7 @@ Quick tip: We put things in the query params if it has a @RequestParam in the co
     ...(Any additional key value pair)
    }
 11. Anything that is placed in the body will not be visible in the URL. Only the server and the params will be visible in the URL.
-
+   ```
 ## Using postman to get the user
 1. Set the request type to GET (Can be used if we use the @GetMapping which is used to get something).
 2. Enter the URL: http://localhost:8080/getUser.
