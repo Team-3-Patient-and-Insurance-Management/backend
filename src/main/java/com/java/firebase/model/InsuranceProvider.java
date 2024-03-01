@@ -1,9 +1,18 @@
 package com.java.firebase.model;
 
-import com.google.firebase.auth.UserRecord;
+import java.util.Date;
 
 public class InsuranceProvider extends User {
-    public InsuranceProvider(String phoneNumber, String firstName, String lastName, String address) {
-        super(phoneNumber, firstName, lastName, address);
+
+    public InsuranceProvider(User user) {
+        super(user.getFirstName(), user.getLastName(), user.getGender(), user.getPhoneNumber(),
+                user.getDateOfBirth(), user.getStreetAddress(), user.getCountry(), user.getState(), user.getCity(),
+                user.getZipCode(), "InsuranceProvider", null, null, null,
+                null, user.getCompany(), user.getCompanyLicense(), user.getIs2FAEnabled(),
+                user.getPhoneNumberVerified());
+    }
+
+    public InsuranceProvider() {
+        super();
     }
 }

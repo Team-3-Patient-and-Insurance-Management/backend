@@ -28,31 +28,31 @@ public class UserDatabaseController {
         return userService.signInUser(idToken);
     }
 
-    @GetMapping("/getUser")
-    public ResponseEntity<User> getUser(@RequestParam String userID) {
-        try {
-            User user = userService.getUser(userID);
-            if (user != null) {
-                return ResponseEntity.ok(user);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+//    @GetMapping("/getUser")
+//    public ResponseEntity<User> getUser(@RequestParam String userID) {
+//        try {
+//            User user = userService.getUser(userID);
+//            if (user != null) {
+//                return ResponseEntity.ok(user);
+//            } else {
+//                return ResponseEntity.notFound().build();
+//            }
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 
-    @PutMapping("/updateUser")
-    public ResponseEntity<String> updateUser(@RequestParam String userID, @RequestBody User newUser) {
-        try {
-            userService.updateUser(userID, newUser);
-            return ResponseEntity.ok("User updated successfully");
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user: " + e.getMessage());
-        }
-    }
+//    @PutMapping("/updateUser")
+//    public ResponseEntity<String> updateUser(@RequestParam String userID, @RequestBody User newUser) {
+//        try {
+//            userService.updateUser(userID, newUser);
+//            return ResponseEntity.ok("User updated successfully");
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user: " + e.getMessage());
+//        }
+//    }
 
     @GetMapping("/testUser")
     public ResponseEntity<String> testUser() {

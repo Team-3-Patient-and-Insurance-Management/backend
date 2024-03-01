@@ -7,6 +7,9 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
+import com.java.firebase.model.Doctor;
+import com.java.firebase.model.InsuranceProvider;
+import com.java.firebase.model.Patient;
 import com.java.firebase.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,13 +31,44 @@ public class UserService {
              * 1. Send verification code to user to verify phone number
              * 2. After phone number is verified, add user to database
              */
-            // Remove sensitive fields from User object before saving to Firestore
-            Firestore dbFirestore = FirestoreClient.getFirestore();
-            ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection("Users").document(userRecord.getUid()).set(user);
-            return collectionsApiFuture.get().getUpdateTime().toString();
+            switch (user.getRole()) {
+                case "doctor":
+                    Doctor doctor = new Doctor(user);
+                    saveUserToFirestore(userRecord, doctor);
+                    break;
+                case "patient":
+                    Patient patient = new Patient(user);
+                    saveUserToFirestore(userRecord, patient);
+                    break;
+                case "insuranceProvider":
+                    InsuranceProvider insuranceProvider = new InsuranceProvider(user);
+                    saveUserToFirestore(userRecord, insuranceProvider);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid role: " + user.getRole());
+            }
+            return "User (" + user.getRole() + ") signed up successfully with uid: " + userRecord.getUid();
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
             return "Error signing up user: " + e.getMessage();
+        }
+    }
+
+    private void saveUserToFirestore(UserRecord userRecord, User user) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> userWriteResult = dbFirestore.collection("Users").document(userRecord.getUid()).set(user);
+        userWriteResult.get();
+        String roleCollection = "";
+        if (user.getRole().equals("doctor")) {
+            roleCollection = "Doctors";
+        } else if (user.getRole().equals("patient")) {
+            roleCollection = "Patients";
+        } else if (user.getRole().equals("insuranceProvider")) {
+            roleCollection = "Insurance Providers";
+        }
+        if (!roleCollection.isEmpty()) {
+            ApiFuture<WriteResult> roleWriteResult = dbFirestore.collection(roleCollection).document(userRecord.getUid()).set(user);
+            roleWriteResult.get();
         }
     }
 
@@ -56,23 +90,5 @@ public class UserService {
             e.printStackTrace();
             return "Error signing in user: " + e.getMessage();
         }
-    }
-
-    public User getUser(String uid) throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference docRef = dbFirestore.collection("Users").document(uid);
-        ApiFuture<DocumentSnapshot> future = docRef.get();
-
-        DocumentSnapshot document = future.get();
-        if (document.exists()) {
-            return document.toObject(User.class);
-        } else {
-            return null; // User not found
-        }
-    }
-
-    public void updateUser(String uid, User newUser) throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> future = dbFirestore.collection("Users").document(uid).set(newUser, SetOptions.merge());
     }
 }
