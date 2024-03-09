@@ -7,18 +7,32 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
-import com.java.firebase.model.Doctor;
-import com.java.firebase.model.InsuranceProvider;
-import com.java.firebase.model.Patient;
+import com.java.firebase.model.Doctor.Doctor;
+import com.java.firebase.model.InsuranceProvider.InsuranceProvider;
+import com.java.firebase.model.Patient.Patient;
 import com.java.firebase.model.User;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Service
 public class UserService {
+    private static UserService instance;
+    public String globalToken;
+    public String globalUid;
+    public String globalEmail;
+    private UserService() {
+    }
+    public static synchronized UserService getInstance() {
+        if (instance == null) {
+            instance = new UserService();
+        }
+        return instance;
+    }
+
     public String signUpUser(String email, String password, User user) throws ExecutionException, InterruptedException {
         try {
             UserRecord.CreateRequest userRequest = new UserRecord.CreateRequest()
@@ -31,22 +45,7 @@ public class UserService {
              * 1. Send verification code to user to verify phone number
              * 2. After phone number is verified, add user to database
              */
-            switch (user.getRole()) {
-                case "doctor":
-                    Doctor doctor = new Doctor(user);
-                    saveUserToFirestore(userRecord, doctor);
-                    break;
-                case "patient":
-                    Patient patient = new Patient(user);
-                    saveUserToFirestore(userRecord, patient);
-                    break;
-                case "insuranceProvider":
-                    InsuranceProvider insuranceProvider = new InsuranceProvider(user);
-                    saveUserToFirestore(userRecord, insuranceProvider);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid role: " + user.getRole());
-            }
+            saveUserToFirestore(userRecord, user);
             return "User (" + user.getRole() + ") signed up successfully with uid: " + userRecord.getUid();
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
@@ -56,27 +55,39 @@ public class UserService {
 
     private void saveUserToFirestore(UserRecord userRecord, User user) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> userWriteResult = dbFirestore.collection("Users").document(userRecord.getUid()).set(user);
-        userWriteResult.get();
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("role", user.getRole());
+        ApiFuture<WriteResult> userResult = dbFirestore.collection("Users").document(userRecord.getUid()).set(userData);
+        userResult.get();
         String roleCollection = "";
         if (user.getRole().equals("doctor")) {
             roleCollection = "Doctors";
+            Doctor doctor = new Doctor(user);
+            doctor.setUid(userRecord.getUid());
+            ApiFuture<WriteResult> doctorResult = dbFirestore.collection(roleCollection).document(userRecord.getUid()).set(doctor);
+            doctorResult.get();
         } else if (user.getRole().equals("patient")) {
             roleCollection = "Patients";
+            Patient patient = new Patient(user);
+            patient.setUid(userRecord.getUid());
+            ApiFuture<WriteResult> patientResult = dbFirestore.collection(roleCollection).document(userRecord.getUid()).set(patient);
+            patientResult.get();
         } else if (user.getRole().equals("insuranceProvider")) {
             roleCollection = "Insurance Providers";
+            InsuranceProvider insuranceProvider = new InsuranceProvider(user);
+            insuranceProvider.setUid(userRecord.getUid());
+            ApiFuture<WriteResult> insuranceProviderResult = dbFirestore.collection(roleCollection).document(userRecord.getUid()).set(insuranceProvider);
+            insuranceProviderResult.get();
         }
-        if (!roleCollection.isEmpty()) {
-            ApiFuture<WriteResult> roleWriteResult = dbFirestore.collection(roleCollection).document(userRecord.getUid()).set(user);
-            roleWriteResult.get();
-        }
+
     }
 
     public String signInUser(@RequestBody String idToken) {
         try {
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-            String uid = decodedToken.getUid();
-
+            this.globalToken = idToken;
+            this.globalUid = decodedToken.getUid();
+            this.globalEmail = decodedToken.getEmail();
             /**
              * 1. Check if user exists in database via their primary key (uid)
              * 2. If user exists, check if 2FA is enabled
@@ -91,4 +102,13 @@ public class UserService {
             return "Error signing in user: " + e.getMessage();
         }
     }
+
+    public String getGlobalUid() {
+        return globalUid;
+    }
+
+    public String getGlobalEmail() {
+        return globalEmail;
+    }
+
 }

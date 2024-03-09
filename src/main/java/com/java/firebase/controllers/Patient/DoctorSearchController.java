@@ -1,7 +1,7 @@
-package com.java.firebase.controllers;
+package com.java.firebase.controllers.Patient;
 
-import com.java.firebase.model.Doctor;
-import com.java.firebase.service.DoctorSearchService;
+import com.java.firebase.model.Doctor.Doctor;
+import com.java.firebase.service.Patient.DoctorSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

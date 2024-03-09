@@ -1,9 +1,9 @@
-package com.java.firebase.service;
+package com.java.firebase.service.Patient;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
-import com.java.firebase.model.Doctor;
+import com.java.firebase.model.Doctor.Doctor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

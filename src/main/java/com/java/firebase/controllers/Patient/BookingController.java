@@ -1,16 +1,14 @@
-package com.java.firebase.controllers;
+package com.java.firebase.controllers.Patient;
 
-import com.java.firebase.service.BookingService;
+import com.java.firebase.service.Patient.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@RequestMapping("/bookings")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -24,4 +22,11 @@ public class BookingController {
     public void bookAppointment(@RequestParam String doctorUid, @RequestParam String time) throws ExecutionException, InterruptedException {
         bookingService.bookAppointment(doctorUid, time);
     }
+
+    @PostMapping("/finish")
+    public void finishAppointment(@RequestParam String doctorUid, @RequestParam String time) throws ExecutionException, InterruptedException {
+        bookingService.finishAppointment(doctorUid, time);
+    }
+
+
 }
