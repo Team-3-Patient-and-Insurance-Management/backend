@@ -1,3 +1,7 @@
+# Running the backend test without CI/CD pipeline
+
+Open the setUp class in src/main/java/com.java.firebase and just click the run button on intelliJ
+
 # Sign Up Test
 
 Quick tip: We put things in the query params if it has a @RequestParam in the code. The same goes for the body section if it has a @RequestBody. If it has both, then we have to include both
