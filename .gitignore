@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### credentials 2FA ###
+src/main/java/com/java/firebase/service/credentials.envfile
+
