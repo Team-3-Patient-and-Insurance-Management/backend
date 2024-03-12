@@ -15,6 +15,10 @@ public class DoctorUpcomingAppointments {
         this.bookingTime = bookingTime;
     }
 
+    public DoctorUpcomingAppointments() {
+        // Default constructor required by Firebase Firestore for deserialization
+    }
+
     public String getPatientName() {
         return patientName;
     }

@@ -11,6 +11,10 @@ public class DoctorAppointmentHistory {
         this.patientName = patientName;
         this.diagnosis = diagnosis;
     }
+
+    public DoctorAppointmentHistory() {
+        // Default constructor required by Firebase Firestore for deserialization
+    }
     public String getPatientName() {
         return patientName;
     }

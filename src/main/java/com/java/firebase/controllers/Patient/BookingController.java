@@ -25,7 +25,7 @@ public class BookingController {
 
     @PostMapping("/finish")
     public void finishAppointment(@RequestParam String doctorUid, @RequestParam String time) throws ExecutionException, InterruptedException {
-        bookingService.finishAppointment(doctorUid, time);
+//        bookingService.finishAppointment(doctorUid, time);
     }
 
 

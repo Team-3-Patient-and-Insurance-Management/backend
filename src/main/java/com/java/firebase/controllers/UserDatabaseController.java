@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.ExecutionException;
 
+@CrossOrigin
 @RestController
 public class UserDatabaseController {
     public UserService userService;
@@ -24,24 +25,20 @@ public class UserDatabaseController {
     }
 
     @PostMapping("/signIn")
-    public String signInUser(@RequestBody String idToken) {
+    public String signInUser(@RequestParam String idToken) {
         return userService.signInUser(idToken);
     }
 
-//    @GetMapping("/getUser")
-//    public ResponseEntity<User> getUser(@RequestParam String userID) {
-//        try {
-//            User user = userService.getUser(userID);
-//            if (user != null) {
-//                return ResponseEntity.ok(user);
-//            } else {
-//                return ResponseEntity.notFound().build();
-//            }
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
+    @PostMapping("/verifyPin")
+    public String verifyPin(@RequestParam String pinCode) {
+        return userService.verifyPin(pinCode);
+    }
+
+
+    @GetMapping("/getUser")
+    public User getUser(@RequestParam String userID) throws ExecutionException, InterruptedException {
+        return userService.getUser(userID);
+    }
 
 //    @PutMapping("/updateUser")
 //    public ResponseEntity<String> updateUser(@RequestParam String userID, @RequestBody User newUser) {
