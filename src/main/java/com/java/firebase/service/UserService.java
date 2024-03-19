@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 public class UserService {
     private static UserService instance;
     public String globalToken;
-    public String globalUid;
+    public String globalUid = "4Xyi0L0FpSbw657wfQVSDONt1QX2";
     public String globalEmail;
     private UserService() {
     }

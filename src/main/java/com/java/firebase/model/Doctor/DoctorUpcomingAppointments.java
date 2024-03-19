@@ -15,6 +15,9 @@ public class DoctorUpcomingAppointments {
         this.bookingTime = bookingTime;
     }
 
+    public DoctorUpcomingAppointments() {
+    }
+
     public String getPatientName() {
         return patientName;
     }
