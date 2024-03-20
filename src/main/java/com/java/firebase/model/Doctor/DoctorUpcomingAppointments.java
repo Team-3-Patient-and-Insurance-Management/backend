@@ -16,7 +16,6 @@ public class DoctorUpcomingAppointments {
     }
 
     public DoctorUpcomingAppointments() {
-        // Default constructor required by Firebase Firestore for deserialization
     }
 
     public String getPatientName() {

@@ -20,6 +20,9 @@ public class PatientInsuranceProviders {
         this.price = price;
     }
 
+    public PatientInsuranceProviders() {
+    }
+
     public String getInsuranceProvider() {
         return insuranceProvider;
     }

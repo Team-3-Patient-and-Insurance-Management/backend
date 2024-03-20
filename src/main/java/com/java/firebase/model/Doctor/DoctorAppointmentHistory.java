@@ -13,7 +13,6 @@ public class DoctorAppointmentHistory {
     }
 
     public DoctorAppointmentHistory() {
-        // Default constructor required by Firebase Firestore for deserialization
     }
     public String getPatientName() {
         return patientName;

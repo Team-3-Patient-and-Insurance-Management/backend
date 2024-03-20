@@ -11,6 +11,8 @@ public class PatientAppointmentHistory {
         this.doctorName = doctorName;
         this.diagnosis = diagnosis;
     }
+    public PatientAppointmentHistory() {
+    }
 
     public String getDoctorName() {
         return doctorName;
