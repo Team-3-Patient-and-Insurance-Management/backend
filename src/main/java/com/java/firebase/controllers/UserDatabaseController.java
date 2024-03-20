@@ -40,6 +40,11 @@ public class UserDatabaseController {
         return userService.getUser(userID);
     }
 
+    @GetMapping("/getUserGlobal")
+    public User getUser() throws ExecutionException, InterruptedException {
+        return userService.getUser();
+    }
+
 //    @PutMapping("/updateUser")
 //    public ResponseEntity<String> updateUser(@RequestParam String userID, @RequestBody User newUser) {
 //        try {

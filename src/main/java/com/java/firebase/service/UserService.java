@@ -159,6 +159,54 @@ public class UserService {
         return null;
     }
 
+    public User getUser() throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        DocumentReference userDocRef = dbFirestore.collection("Users").document(globalUid);
+        ApiFuture<DocumentSnapshot> userFuture = userDocRef.get();
+        System.out.println("getting user");
+        DocumentSnapshot userDocument = userFuture.get();
+        if (userDocument.exists()) {
+            Map<String, Object> userData = userDocument.getData();
+            String role = (String) userData.get("role");
+            System.out.println("exists " + role);
+
+            String roleCollection = getRoleCollection(role);
+            if (!roleCollection.isEmpty()) {
+                DocumentReference roleDocRef = dbFirestore.collection(roleCollection).document(globalUid);
+                ApiFuture<DocumentSnapshot> roleFuture = roleDocRef.get();
+                System.out.println("getting role");
+
+                DocumentSnapshot roleDocument = roleFuture.get();
+                if (roleDocument.exists()) {
+                    switch (role) {
+                        case "doctor":
+                            System.out.println("in doctor");
+                            Doctor doctor = roleDocument.toObject(Doctor.class);
+                            if (doctor != null) {
+                                doctor.setUid(globalUid);
+                            }
+                            return doctor;
+                        case "patient":
+                            Patient patient = roleDocument.toObject(Patient.class);
+                            if (patient != null) {
+                                patient.setUid(globalUid);
+                            }
+                            return patient;
+                        case "insuranceProvider":
+                            InsuranceProvider insuranceProvider = roleDocument.toObject(InsuranceProvider.class);
+                            if (insuranceProvider != null) {
+                                insuranceProvider.setUid(globalUid);
+                            }
+                            return insuranceProvider;
+                        default:
+                            return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     private String getRoleCollection(String role) {
         String roleCollection = "";
 
