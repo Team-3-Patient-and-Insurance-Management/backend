@@ -45,16 +45,10 @@ public class UserDatabaseController {
         return userService.getUser();
     }
 
-//    @PutMapping("/updateUser")
-//    public ResponseEntity<String> updateUser(@RequestParam String userID, @RequestBody User newUser) {
-//        try {
-//            userService.updateUser(userID, newUser);
-//            return ResponseEntity.ok("User updated successfully");
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user: " + e.getMessage());
-//        }
-//    }
+    @PutMapping("/updateUser")
+    public ResponseEntity<String> updateUser(@RequestParam String userID, @RequestBody User newUser) {
+        return userService.updateUser(userID, newUser);
+    }
 
     @GetMapping("/testUser")
     public ResponseEntity<String> testUser() {

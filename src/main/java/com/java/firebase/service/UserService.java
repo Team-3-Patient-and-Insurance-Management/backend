@@ -12,6 +12,8 @@ import com.java.firebase.model.Doctor.Doctor;
 import com.java.firebase.model.InsuranceProvider.InsuranceProvider;
 import com.java.firebase.model.Patient.Patient;
 import com.java.firebase.model.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -225,6 +227,57 @@ public class UserService {
         }
 
         return roleCollection;
+    }
+
+    public ResponseEntity<String> updateUser(String uid, User updatedUser) {
+        try {
+            System.out.println("In update user");
+            Firestore dbFirestore = FirestoreClient.getFirestore();
+
+            // Get the existing user details
+            User existingUser = getUser(uid);
+            if (existingUser == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Update the user object based on the role
+            String role = existingUser.getRole();
+            if ("doctor".equals(role)) {
+                existingUser.setDoctorLicense(updatedUser.getDoctorLicense());
+                existingUser.setSpecialization(updatedUser.getSpecialization());
+                System.out.println("In Doctor");
+            } else if ("insuranceProvider".equals(role)) {
+                existingUser.setCompany(updatedUser.getCompany());
+                existingUser.setCompanyLicense(updatedUser.getCompanyLicense());
+            }
+
+            // Update the common user fields
+            existingUser.setFirstName(updatedUser.getFirstName());
+            existingUser.setLastName(updatedUser.getLastName());
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+            existingUser.setDateOfBirth(updatedUser.getDateOfBirth());
+            existingUser.setStreetAddress(updatedUser.getStreetAddress());
+            existingUser.setCountry(updatedUser.getCountry());
+            existingUser.setState(updatedUser.getState());
+            existingUser.setCity(updatedUser.getCity());
+            existingUser.setZipCode(updatedUser.getZipCode());
+
+            // Determine the role collection
+            String roleCollection = getRoleCollection(role);
+            if (roleCollection == null || roleCollection.isEmpty()) {
+                return ResponseEntity.badRequest().body("Role collection not found");
+            }
+
+            // Update the user document in Firestore
+            DocumentReference roleDocRef = dbFirestore.collection(roleCollection).document(uid);
+            ApiFuture<WriteResult> writeResult = roleDocRef.set(existingUser);
+            writeResult.get(); // Wait for the write operation to complete
+            System.out.println("USER UPDATED");
+            return ResponseEntity.ok("User updated successfully");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 
