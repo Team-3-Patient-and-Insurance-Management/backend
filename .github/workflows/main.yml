@@ -24,5 +24,5 @@ jobs:
       - name: Build and push the image
         run: |
           docker login --username careconnect360 --password ${{secrets.ACCESS_TOKEN}} ghcr.io
-          docker build -t ghcr.io/Team-3-Patient-and-Insurance-Management/backend:latest --file Dockerfile .
-          docker push ghcr.io/Team-3-Patient-and-Insurance-Management/backend:latest
+          docker build -t ghcr.io/team-3-patient-and-insurance-management/backend:latest --file Dockerfile .
+          docker push ghcr.io/team-3-patient-and-insurance-management/backend:latest
