@@ -13,6 +13,7 @@ public class User {
     private String gender;
     private String phoneNumber;
     private Date dateOfBirth;
+    private String profilePictureUrl;
 
     // Address Information
     private String streetAddress;
@@ -39,10 +40,10 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String gender, String phoneNumber, Date dateOfBirth,
+    public User(String firstName, String lastName, String gender, String phoneNumber, Date dateOfBirth, String profilePictureUrl,
                 String streetAddress, String country, String state, String city, String zipCode,
                 String role, String doctorLicense, String specialization, Boolean supportCovid,
-                List<String> appointmentTimes, String company, String companyLicense,
+                String company, String companyLicense,
                 Boolean is2FAEnabled, Boolean isPhoneNumberVerified) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,6 +51,7 @@ public class User {
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
+        this.profilePictureUrl = profilePictureUrl;
         this.streetAddress = streetAddress;
         this.country = country;
         this.state = state;
@@ -59,7 +61,6 @@ public class User {
         this.doctorLicense = doctorLicense;
         this.specialization = specialization;
         this.supportCovid = supportCovid;
-        this.appointmentTimes = appointmentTimes != null ? appointmentTimes : new ArrayList<>();
         this.company = company;
         this.companyLicense = companyLicense;
         this.is2FAEnabled = is2FAEnabled;
@@ -103,6 +104,13 @@ public class User {
     }
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public String getStreetAddress() {
@@ -159,13 +167,6 @@ public class User {
     }
     public void setSupportCovid(Boolean supportCovid) {
         this.supportCovid = supportCovid;
-    }
-    public List<String> getAppointmentTimes() {
-        return appointmentTimes;
-    }
-
-    public void setAppointmentTimes(List<String> appointmentTimes) {
-        this.appointmentTimes = appointmentTimes;
     }
     public String getCompany() {
         return company;

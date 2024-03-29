@@ -4,6 +4,7 @@ import com.java.firebase.model.Doctor.DoctorAppointmentHistory;
 import com.java.firebase.model.Doctor.DoctorUpcomingAppointments;
 import com.java.firebase.model.Patient.PatientAppointmentHistory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
+@CrossOrigin
 public class DoctorDashboardController {
     private final DoctorDashboardService doctorDashboardService;
 

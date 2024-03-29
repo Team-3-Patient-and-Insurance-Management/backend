@@ -22,8 +22,8 @@ import java.util.concurrent.ExecutionException;
 public class UserService {
     private static UserService instance;
     public String globalToken;
-    public String globalUid = "4Xyi0L0FpSbw657wfQVSDONt1QX2";
-    public String globalEmail;
+    public String globalUid = "KokBDptOn0TFon94FvJ6s8cei832";
+    public String globalEmail = "vmarvellinus@gmail.com";
     private UserService() {
     }
     public static synchronized UserService getInstance() {
@@ -79,7 +79,6 @@ public class UserService {
             ApiFuture<WriteResult> insuranceProviderResult = dbFirestore.collection(roleCollection).document(userRecord.getUid()).set(insuranceProvider);
             insuranceProviderResult.get();
         }
-
     }
 
     public String signInUser(@RequestBody String idToken) {
@@ -88,6 +87,19 @@ public class UserService {
             this.globalToken = idToken;
             this.globalUid = decodedToken.getUid();
             this.globalEmail = decodedToken.getEmail();
+            Firestore dbFirestore = FirestoreClient.getFirestore();
+            DocumentReference userRef = dbFirestore.collection("Users").document(globalUid);
+            DocumentSnapshot userSnapshot = userRef.get().get();
+            if (userSnapshot.exists()) {
+                String role = userSnapshot.getString("role");
+                if (role != null) {
+                    return role;
+                } else {
+                    return "User does not have a role";
+                }
+            } else {
+                return "User does not exist";
+            }
             /**
              * 1. Check if user exists in database via their primary key (uid)
              * 2. If user exists, check if 2FA is enabled
@@ -96,10 +108,13 @@ public class UserService {
              * 4. If 2FA is not enabled, sign in user
              */
 
-            return "User signed in successfully";
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
             return "Error signing in user: " + e.getMessage();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
