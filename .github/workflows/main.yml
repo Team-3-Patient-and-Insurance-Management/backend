@@ -1,8 +1,6 @@
 name: Docker Image CI for GHCR
 on:
-  push:
-    branches:
-      - main  # Adjust the branch name if needed
+  push
 
 jobs:
   build_and_publish:
@@ -23,10 +21,8 @@ jobs:
       - name: Run the unit tests
         run: mvn --batch-mode -Dmaven.test.failure.ignore=true test
 
-      - name: Log into GitHub Container Registry
-        run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login ghcr.io -u ${{ github.organization }} --password-stdin
-
       - name: Build and push the image
         run: |
-          docker build -t ghcr.io/${{ github.organization }}/backend:latest --file Dockerfile .
-          docker push ghcr.io/${{ github.organization }}/backend:latest
+          docker login --username careconnect360 --password ${{secrets.ACCESS_TOKEN}} ghcr.io
+          docker build -t ghcr.io/Team-3-Patient-and-Insurance-Management/backend:latest --file Dockerfile .
+          docker push ghcr.io/Team-3-Patient-and-Insurance-Management/backend:latest
