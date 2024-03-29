@@ -28,7 +28,7 @@ jobs:
         if: always()
         with:
           name: Maven Tests
-          path: TEST-com.example.backend.setUpTests.xml
+          path: target/surefire-reports/*.xml
           reporter: java-junit
           fail-on-error: true
 
