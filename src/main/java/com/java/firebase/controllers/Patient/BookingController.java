@@ -5,7 +5,6 @@ import com.java.firebase.service.Patient.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
