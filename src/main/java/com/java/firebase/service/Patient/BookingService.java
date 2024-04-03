@@ -25,7 +25,7 @@ public class BookingService {
         this.doctorSearchService = doctorSearchService;
     }
 
-    public boolean bookAppointment(String doctorUid, Date date, String time) {
+    public boolean bookAppointment(String doctorUid, Date date, String time, String experiencedSymptoms, String closePhysicalContact, String positiveCovid90Days, String selfMonitor, String wantCovidTest) {
         try {
             Firestore dbFirestore = FirestoreClient.getFirestore();
             String patientUid = UserService.getInstance().globalUid;
@@ -40,12 +40,13 @@ public class BookingService {
             DocumentReference patientRef = dbFirestore.collection("Patients").document(patientUid);
             DocumentSnapshot patientSnapshot = patientRef.get().get();
             String patientName = patientSnapshot.getString("fullName");
+            Date patientBirthday = patientSnapshot.getDate("dateOfBirth");
+            String patientGender = patientSnapshot.getString("gender");
 
             // add booking to patient's upcoming appointments
             Map<String, Object> appointmentData = new HashMap<>();
             appointmentData.put("doctorName", doctorName);
             appointmentData.put("doctorUid", doctorUid);
-
             appointmentData.put("date", date);
             appointmentData.put("time", time);
             patientRef.update("patientUpcomingAppointments", FieldValue.arrayUnion(appointmentData)).get();
@@ -54,9 +55,13 @@ public class BookingService {
             Map<String, Object> patientData = new HashMap<>();
             patientData.put("patientName", patientName);
             patientData.put("patientUid", patientUid);
-
             patientData.put("date", date);
             patientData.put("time", time);
+            patientData.put("experiencedSymptoms", experiencedSymptoms);
+            patientData.put("closePhysicalContact", closePhysicalContact);
+            patientData.put("positiveCovid90Days", positiveCovid90Days);
+            patientData.put("selfMonitor", selfMonitor);
+            patientData.put("wantCovidTest", wantCovidTest);
             docRef.update("doctorUpcomingAppointments", FieldValue.arrayUnion(patientData)).get();
 
             sendEmail(patientEmail, "Appointment Booked", "Your appointment with " + doctorName + " has been booked for " + time);
@@ -67,7 +72,7 @@ public class BookingService {
         }
     }
 
-    public void finishAppointment(String doctorUid, String time, String diagnosis, String covidSymptomDetails, String testResults, String medicalHistory, String insuranceDetails) throws ExecutionException, InterruptedException {
+    public void finishAppointment(String doctorUid, Date date, String time, String diagnosis, String covidSymptomDetails, String testResults, String medicalHistory, String insuranceDetails) throws ExecutionException, InterruptedException {
         try {
             Firestore dbFirestore = FirestoreClient.getFirestore();
             String patientUid = UserService.getInstance().globalUid;
@@ -83,7 +88,7 @@ public class BookingService {
             String patientName = patientSnapshot.getString("fullName");
 
             // remove booking from patient's upcoming appointments
-            patientRef.update("patientUpcomingAppointments", FieldValue.arrayRemove(getPatientAppointmentData(patientUid, doctorUid, time))).get();
+            patientRef.update("patientUpcomingAppointments", FieldValue.arrayRemove(getPatientAppointmentData(patientUid, doctorUid, date, time))).get();
 
             // add booking to patient's appointments history
             Map<String, Object> appointmentData = new HashMap<>();
@@ -96,7 +101,7 @@ public class BookingService {
             patientRef.update("patientAppointmentHistory", FieldValue.arrayUnion(appointmentData)).get();
 
             // remove booking from doctor's upcoming appointments
-            docRef.update("doctorUpcomingAppointments", FieldValue.arrayRemove(getDoctorAppointmentData(patientUid, doctorUid, time))).get();
+            docRef.update("doctorUpcomingAppointments", FieldValue.arrayRemove(getDoctorAppointmentData(patientUid, doctorUid, date, time))).get();
 
             // add booking to doctor's appointments history
             Map<String, Object> patientData = new HashMap<>();
@@ -113,16 +118,18 @@ public class BookingService {
         }
     }
 
-    private Map<String, String> getPatientAppointmentData(String patientUid, String doctorUid, String time) throws ExecutionException, InterruptedException {
+    private Map<String, Object> getPatientAppointmentData(String patientUid, String doctorUid, Date date, String time) throws ExecutionException, InterruptedException {
         Firestore checkFirestore = FirestoreClient.getFirestore();
         DocumentReference checkRef = checkFirestore.collection("Patients").document(patientUid);
         DocumentSnapshot checkSnapshot = checkRef.get().get();
 
         if (checkSnapshot.exists()) {
             if (checkSnapshot.contains("patientUpcomingAppointments")) {
-                List<Map<String, String>> patientAppointments = (List<Map<String, String>>) checkSnapshot.get("patientUpcomingAppointments");
-                for (Map<String, String> appointment : patientAppointments) {
-                    if (appointment.get("doctorUid").equals(doctorUid) && appointment.get("time").equals(time)) {
+                List<Map<String, Object>> patientAppointments = (List<Map<String, Object>>) checkSnapshot.get("patientUpcomingAppointments");
+                for (Map<String, Object> appointment : patientAppointments) {
+                    Timestamp appointmentTimestamp = (Timestamp) appointment.get("date");
+                    Date appointmentDate = appointmentTimestamp.toDate();
+                    if (appointment.get("doctorUid").equals(doctorUid) && appointment.get("time").equals(time) && appointmentDate.equals(date)) {
                         return appointment;
                     }
                 }
@@ -130,21 +137,23 @@ public class BookingService {
                 throw new RuntimeException("Error getting patient upcoming appointments");
             }
         } else {
-            throw new RuntimeException("patient snapshot doesnt exist");
+            throw new RuntimeException("patient snapshot doesn't exist");
         }
         return null;
     }
 
-    private Map<String, String> getDoctorAppointmentData(String patientUid, String doctorUid, String time) throws ExecutionException, InterruptedException {
+    private Map<String, Object> getDoctorAppointmentData(String patientUid, String doctorUid, Date date, String time) throws ExecutionException, InterruptedException {
         Firestore checkFirestore = FirestoreClient.getFirestore();
         DocumentReference checkRef = checkFirestore.collection("Doctors").document(doctorUid);
         DocumentSnapshot checkSnapshot = checkRef.get().get();
 
         if (checkSnapshot.exists()) {
             if (checkSnapshot.contains("doctorUpcomingAppointments")) {
-                List<Map<String, String>> doctorAppointments = (List<Map<String, String>>) checkSnapshot.get("doctorUpcomingAppointments");
-                for (Map<String, String> appointment : doctorAppointments) {
-                    if (appointment.get("patientUid").equals(patientUid) && appointment.get("time").equals(time)) {
+                List<Map<String, Object>> doctorAppointments = (List<Map<String, Object>>) checkSnapshot.get("doctorUpcomingAppointments");
+                for (Map<String, Object> appointment : doctorAppointments) {
+                    Timestamp appointmentTimestamp = (Timestamp) appointment.get("date");
+                    Date appointmentDate = appointmentTimestamp.toDate();
+                    if (appointment.get("patientUid").equals(patientUid) && appointment.get("time").equals(time) && appointmentDate.equals(date)) {
                         return appointment;
                     }
                 }
@@ -152,7 +161,7 @@ public class BookingService {
                 throw new RuntimeException("Error getting doctor upcoming appointments");
             }
         } else {
-            throw new RuntimeException("doctor snapshot doesnt exist");
+            throw new RuntimeException("doctor snapshot doesn't exist");
         }
         return null;
     }

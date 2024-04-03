@@ -7,12 +7,14 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
+import com.java.firebase.controllers.Twilio2FAController;
 import com.java.firebase.model.Doctor.Doctor;
 import com.java.firebase.model.InsuranceProvider.InsuranceProvider;
 import com.java.firebase.model.Patient.Patient;
 import com.java.firebase.model.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,64 +61,225 @@ public class UserService {
         userData.put("role", user.getRole());
         ApiFuture<WriteResult> userResult = dbFirestore.collection("Users").document(userRecord.getUid()).set(userData);
         userResult.get();
-        String roleCollection = "";
-        if (user.getRole().equals("doctor")) {
-            roleCollection = "Doctors";
+        String roleCollection = getRoleCollection(user.getRole());
+        if (roleCollection.equals("Doctors")) {
             Doctor doctor = new Doctor(user);
             doctor.setUid(userRecord.getUid());
             ApiFuture<WriteResult> doctorResult = dbFirestore.collection(roleCollection).document(userRecord.getUid()).set(doctor);
             doctorResult.get();
-        } else if (user.getRole().equals("patient")) {
-            roleCollection = "Patients";
+        } else if (roleCollection.equals("Patients")) {
             Patient patient = new Patient(user);
             patient.setUid(userRecord.getUid());
             ApiFuture<WriteResult> patientResult = dbFirestore.collection(roleCollection).document(userRecord.getUid()).set(patient);
             patientResult.get();
-        } else if (user.getRole().equals("insuranceProvider")) {
-            roleCollection = "Insurance Providers";
+        } else if (roleCollection.equals("Insurance Providers")) {
             InsuranceProvider insuranceProvider = new InsuranceProvider(user);
             insuranceProvider.setUid(userRecord.getUid());
             ApiFuture<WriteResult> insuranceProviderResult = dbFirestore.collection(roleCollection).document(userRecord.getUid()).set(insuranceProvider);
             insuranceProviderResult.get();
         }
+
     }
 
-    public String signInUser(@RequestBody String idToken) {
+    public String signInUser(String idToken) {
         try {
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
             this.globalToken = idToken;
             this.globalUid = decodedToken.getUid();
             this.globalEmail = decodedToken.getEmail();
-            Firestore dbFirestore = FirestoreClient.getFirestore();
-            DocumentReference userRef = dbFirestore.collection("Users").document(globalUid);
-            DocumentSnapshot userSnapshot = userRef.get().get();
-            if (userSnapshot.exists()) {
-                String role = userSnapshot.getString("role");
-                if (role != null) {
-                    return role;
-                } else {
-                    return "User does not have a role";
-                }
-            } else {
-                return "User does not exist";
-            }
-            /**
-             * 1. Check if user exists in database via their primary key (uid)
-             * 2. If user exists, check if 2FA is enabled
-             * 3. If 2FA is enabled and phone # is verified, send 2FA code
-             *
-             * 4. If 2FA is not enabled, sign in user
-             */
 
+            User user =  getUser(this.globalUid);
+            return Twilio2FAController.generateOTP(user.getPhoneNumber());
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
             return "Error signing in user: " + e.getMessage();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public String verifyPin(String pinCode) {
+        try {
+            User user = getUser(this.globalUid);
+            String result = Twilio2FAController.verifyOTP(user.getPhoneNumber(), pinCode);
+            if (result.equals("approved")) {
+                return user.getRole();
+            } else {
+                // result is "pending", meaning incorrect pincode
+                return null;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public User getUser(String uid) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        DocumentReference userDocRef = dbFirestore.collection("Users").document(uid);
+        ApiFuture<DocumentSnapshot> userFuture = userDocRef.get();
+        System.out.println("getting user");
+        DocumentSnapshot userDocument = userFuture.get();
+        if (userDocument.exists()) {
+            Map<String, Object> userData = userDocument.getData();
+            String role = (String) userData.get("role");
+            System.out.println("exists " + role);
+
+            String roleCollection = getRoleCollection(role);
+            if (!roleCollection.isEmpty()) {
+                DocumentReference roleDocRef = dbFirestore.collection(roleCollection).document(uid);
+                ApiFuture<DocumentSnapshot> roleFuture = roleDocRef.get();
+                System.out.println("getting role");
+
+                DocumentSnapshot roleDocument = roleFuture.get();
+                if (roleDocument.exists()) {
+                    switch (role) {
+                        case "doctor":
+                            System.out.println("in doctor");
+                            Doctor doctor = roleDocument.toObject(Doctor.class);
+                            if (doctor != null) {
+                                doctor.setUid(uid);
+                            }
+                            return doctor;
+                        case "patient":
+                            Patient patient = roleDocument.toObject(Patient.class);
+                            if (patient != null) {
+                                patient.setUid(uid);
+                            }
+                            return patient;
+                        case "insuranceProvider":
+                            InsuranceProvider insuranceProvider = roleDocument.toObject(InsuranceProvider.class);
+                            if (insuranceProvider != null) {
+                                insuranceProvider.setUid(uid);
+                            }
+                            return insuranceProvider;
+                        default:
+                            return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public User getUser() throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        DocumentReference userDocRef = dbFirestore.collection("Users").document(globalUid);
+        ApiFuture<DocumentSnapshot> userFuture = userDocRef.get();
+        System.out.println("getting user");
+        DocumentSnapshot userDocument = userFuture.get();
+        if (userDocument.exists()) {
+            Map<String, Object> userData = userDocument.getData();
+            String role = (String) userData.get("role");
+            System.out.println("exists " + role);
+
+            String roleCollection = getRoleCollection(role);
+            if (!roleCollection.isEmpty()) {
+                DocumentReference roleDocRef = dbFirestore.collection(roleCollection).document(globalUid);
+                ApiFuture<DocumentSnapshot> roleFuture = roleDocRef.get();
+                System.out.println("getting role");
+
+                DocumentSnapshot roleDocument = roleFuture.get();
+                if (roleDocument.exists()) {
+                    switch (role) {
+                        case "doctor":
+                            System.out.println("in doctor");
+                            Doctor doctor = roleDocument.toObject(Doctor.class);
+                            if (doctor != null) {
+                                doctor.setUid(globalUid);
+                            }
+                            return doctor;
+                        case "patient":
+                            Patient patient = roleDocument.toObject(Patient.class);
+                            if (patient != null) {
+                                patient.setUid(globalUid);
+                            }
+                            return patient;
+                        case "insuranceProvider":
+                            InsuranceProvider insuranceProvider = roleDocument.toObject(InsuranceProvider.class);
+                            if (insuranceProvider != null) {
+                                insuranceProvider.setUid(globalUid);
+                            }
+                            return insuranceProvider;
+                        default:
+                            return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private String getRoleCollection(String role) {
+        String roleCollection = "";
+
+        switch (role) {
+            case "doctor":
+                roleCollection = "Doctors";
+                break;
+            case "patient":
+                roleCollection = "Patients";
+                break;
+            case "insuranceProvider":
+                roleCollection = "Insurance Providers";
+                break;
+            default:
+                break;
+        }
+
+        return roleCollection;
+    }
+
+    public ResponseEntity<String> updateUser(String uid, User updatedUser) {
+        try {
+            System.out.println("In update user");
+            Firestore dbFirestore = FirestoreClient.getFirestore();
+
+            // Get the existing user details
+            User existingUser = getUser(uid);
+            if (existingUser == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Update the user object based on the role
+            String role = existingUser.getRole();
+            if ("doctor".equals(role)) {
+                existingUser.setDoctorLicense(updatedUser.getDoctorLicense());
+                existingUser.setSpecialization(updatedUser.getSpecialization());
+                System.out.println("In Doctor");
+            } else if ("insuranceProvider".equals(role)) {
+                existingUser.setCompany(updatedUser.getCompany());
+                existingUser.setCompanyLicense(updatedUser.getCompanyLicense());
+            }
+
+            // Update the common user fields
+            existingUser.setFirstName(updatedUser.getFirstName());
+            existingUser.setLastName(updatedUser.getLastName());
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+            existingUser.setDateOfBirth(updatedUser.getDateOfBirth());
+            existingUser.setStreetAddress(updatedUser.getStreetAddress());
+            existingUser.setCountry(updatedUser.getCountry());
+            existingUser.setState(updatedUser.getState());
+            existingUser.setCity(updatedUser.getCity());
+            existingUser.setZipCode(updatedUser.getZipCode());
+
+            // Determine the role collection
+            String roleCollection = getRoleCollection(role);
+            if (roleCollection == null || roleCollection.isEmpty()) {
+                return ResponseEntity.badRequest().body("Role collection not found");
+            }
+
+            // Update the user document in Firestore
+            DocumentReference roleDocRef = dbFirestore.collection(roleCollection).document(uid);
+            ApiFuture<WriteResult> writeResult = roleDocRef.set(existingUser);
+            writeResult.get(); // Wait for the write operation to complete
+            System.out.println("USER UPDATED");
+            return ResponseEntity.ok("User updated successfully");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     public String getGlobalUid() {
         return globalUid;

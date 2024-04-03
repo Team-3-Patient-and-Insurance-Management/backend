@@ -25,7 +25,9 @@ public class Twilio2FAController {
     public static final String VERIFY_SERVICE_SID = System.getenv("TWILIO_VERIFY_SERVICE_SID");
 
     @GetMapping(value = "/generateOTP/{phoneNumber}")
-    public ResponseEntity<String> generateOTP(@PathVariable String phoneNumber){
+    public static String generateOTP(@PathVariable String phoneNumber){
+        System.out.println(ACCOUNT_SID + " " + AUTH_TOKEN + " " + VERIFY_SERVICE_SID);
+        System.out.println(System.getenv("TWILIO_ACCOUNT_SID") + " " + System.getenv("TWILIO_AUTH_TOKEN") + " " + System.getenv("TWILIO_VERIFY_SERVICE_SID"));
 
         Twilio.init(System.getenv("TWILIO_ACCOUNT_SID"), System.getenv("TWILIO_AUTH_TOKEN"));
 
@@ -36,20 +38,20 @@ public class Twilio2FAController {
                         "sms") // this is the channel type
                 .create();
 
+
         System.out.println(verification.getStatus());
 
-//        log.info("OTP has been successfully generated, and awaits your verification {}", LocalDateTime.now());
-
-        return new ResponseEntity<>("Your OTP has been sent to your verified phone number", HttpStatus.OK);
+        return verification.getStatus();
     }
 
     @GetMapping("/verifyOTP/{phoneNumber}/{codeReceived}")
-    public ResponseEntity<String> verifyOTP(@PathVariable String phoneNumber, @PathVariable String codeReceived) throws Exception {
+    public static String verifyOTP(@PathVariable String phoneNumber, @PathVariable String codeReceived) throws Exception {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
+        VerificationCheck verificationCheck;
         try {
 
-            VerificationCheck verificationCheck = VerificationCheck.creator(
+            verificationCheck = VerificationCheck.creator(
                             VERIFY_SERVICE_SID)
                     .setTo("+" + phoneNumber)
                     .setCode(codeReceived)
@@ -58,9 +60,9 @@ public class Twilio2FAController {
             System.out.println(verificationCheck.getStatus());
 
         } catch (Exception e) {
-            return new ResponseEntity<>("Verification failed.", HttpStatus.BAD_REQUEST);
+            return "failed";
         }
-        return new ResponseEntity<>("This user's verification has been completed successfully", HttpStatus.OK);
+        return verificationCheck.getStatus();
     }
 
 }

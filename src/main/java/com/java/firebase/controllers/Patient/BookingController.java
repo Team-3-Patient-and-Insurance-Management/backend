@@ -1,6 +1,7 @@
 package com.java.firebase.controllers.Patient;
 
 import com.java.firebase.model.Doctor.AppointmentDetails;
+import com.java.firebase.model.Patient.CovidSurvey;
 import com.java.firebase.service.Patient.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +21,13 @@ public class BookingController {
     }
 
     @PostMapping("/bookAppointment")
-    public boolean bookAppointment(@RequestParam String doctorUid, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date, @RequestParam String time) throws ExecutionException, InterruptedException {
-        return bookingService.bookAppointment(doctorUid, date, time);
+    public boolean bookAppointment(@RequestParam String doctorUid, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date, @RequestParam String time, @RequestBody CovidSurvey covidSurvey) throws ExecutionException, InterruptedException {
+        return bookingService.bookAppointment(doctorUid, date, time, covidSurvey.getExperiencedSymptoms(), covidSurvey.getClosePhysicalContact(), covidSurvey.getPositiveCovid90Days(), covidSurvey.getSelfMonitor(), covidSurvey.getWantCovidTest());
     }
 
     @PostMapping("/finishAppointment")
-    public void finishAppointment(@RequestParam String doctorUid, @RequestParam String time, @RequestBody AppointmentDetails appointmentDetails) throws ExecutionException, InterruptedException {
-        bookingService.finishAppointment(doctorUid, time, appointmentDetails.getDiagnosis(),
+    public void finishAppointment(@RequestParam String doctorUid, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date, @RequestParam String time, @RequestBody AppointmentDetails appointmentDetails) throws ExecutionException, InterruptedException {
+        bookingService.finishAppointment(doctorUid, date, time, appointmentDetails.getDiagnosis(),
                 appointmentDetails.getCovidSymptomDetails(), appointmentDetails.getTestResults(),
                 appointmentDetails.getMedicalHistory(), appointmentDetails.getInsuranceDetails());
     }

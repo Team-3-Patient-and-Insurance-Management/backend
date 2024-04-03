@@ -43,13 +43,13 @@ public class DoctorDashboardService {
         }
     }
 
-    public List<PatientAppointmentHistory> getPatientAppointmentHistory(String patientUid) throws ExecutionException, InterruptedException {
+    public Patient getPatientDetails(String patientUid) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getInstance().globalUid);
         DocumentSnapshot patientSnapshot = patientRef.get().get();
         Patient patient = patientSnapshot.toObject(Patient.class);
         if (patient != null) {
-            return patient.getPatientAppointmentHistory();
+            return patient;
         }
         else {
             return null;
