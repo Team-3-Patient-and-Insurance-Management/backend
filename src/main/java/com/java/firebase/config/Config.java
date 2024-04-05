@@ -14,6 +14,7 @@ public class Config implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:3000",
+                        "http://localhost:3001",
                         "patientinsurancemanagement.web.app",
                         "patientinsurancemanagement.firebaseapp.com"
                 )
