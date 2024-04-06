@@ -26,10 +26,9 @@ public class BookingController {
     }
 
     @PostMapping("/finishAppointment")
-    public void finishAppointment(@RequestParam String doctorUid, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date, @RequestParam String time, @RequestBody AppointmentDetails appointmentDetails) throws ExecutionException, InterruptedException {
-        bookingService.finishAppointment(doctorUid, date, time, appointmentDetails.getDiagnosis(),
-                appointmentDetails.getCovidSymptomDetails(), appointmentDetails.getTestResults(),
-                appointmentDetails.getMedicalHistory(), appointmentDetails.getInsuranceDetails());
+    public void finishAppointment(@RequestParam String patientUid, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date, @RequestParam String time, @RequestBody AppointmentDetails appointmentDetails) throws ExecutionException, InterruptedException {
+        bookingService.finishAppointment(patientUid, date, time, appointmentDetails.getDiagnosis(),
+                appointmentDetails.getCovidSymptomDetails(), appointmentDetails.getTestResults(), appointmentDetails.getInsuranceDetails());
     }
 
     @GetMapping("/checkAvailability")

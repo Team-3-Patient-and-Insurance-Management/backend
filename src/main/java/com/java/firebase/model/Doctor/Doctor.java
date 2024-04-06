@@ -9,6 +9,7 @@ public class Doctor extends User {
     private String uid;
     private List<DoctorAppointmentHistory> doctorAppointmentHistory;
     private List<DoctorUpcomingAppointments> doctorUpcomingAppointments;
+    private List<DoctorRatings> doctorRatings;
 
     public Doctor(User user) {
         super(user.getFirstName(), user.getLastName(), user.getGender(), user.getPhoneNumber(),
@@ -18,12 +19,14 @@ public class Doctor extends User {
                 null, null, user.getIs2FAEnabled(), user.getPhoneNumberVerified());
         this.doctorAppointmentHistory = new ArrayList<>();
         this.doctorUpcomingAppointments = new ArrayList<>();
+        this.doctorRatings = new ArrayList<>();
     }
 
     public Doctor() {
         super();
         this.doctorAppointmentHistory = new ArrayList<>();
         this.doctorUpcomingAppointments = new ArrayList<>();
+        this.doctorRatings = new ArrayList<>();
     }
 
     public String getUid() {
@@ -47,5 +50,13 @@ public class Doctor extends User {
 
     public void setDoctorUpcomingAppointments(List<DoctorUpcomingAppointments> doctorUpcomingAppointments) {
         this.doctorUpcomingAppointments = doctorUpcomingAppointments;
+    }
+
+    public List<DoctorRatings> getDoctorRatings() {
+        return doctorRatings;
+    }
+
+    public void setDoctorRatings(List<DoctorRatings> doctorRatings) {
+        this.doctorRatings = doctorRatings;
     }
 }

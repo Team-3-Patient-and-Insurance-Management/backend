@@ -4,17 +4,15 @@ public class AppointmentDetails {
     private String diagnosis;
     private String covidSymptomDetails;
     private String testResults;
-    private String medicalHistory;
     private String insuranceDetails;
 
     public AppointmentDetails() {
     }
 
-    public AppointmentDetails(String diagnosis, String covidSymptomDetails, String testResults, String medicalHistory, String insuranceDetails) {
+    public AppointmentDetails(String diagnosis, String covidSymptomDetails, String testResults, String insuranceDetails) {
         this.diagnosis = diagnosis;
         this.covidSymptomDetails = covidSymptomDetails;
         this.testResults = testResults;
-        this.medicalHistory = medicalHistory;
         this.insuranceDetails = insuranceDetails;
     }
 
@@ -40,14 +38,6 @@ public class AppointmentDetails {
 
     public void setTestResults(String testResults) {
         this.testResults = testResults;
-    }
-
-    public String getMedicalHistory() {
-        return medicalHistory;
-    }
-
-    public void setMedicalHistory(String medicalHistory) {
-        this.medicalHistory = medicalHistory;
     }
 
     public String getInsuranceDetails() {

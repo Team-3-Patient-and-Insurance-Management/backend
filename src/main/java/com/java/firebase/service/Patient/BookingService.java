@@ -40,8 +40,6 @@ public class BookingService {
             DocumentReference patientRef = dbFirestore.collection("Patients").document(patientUid);
             DocumentSnapshot patientSnapshot = patientRef.get().get();
             String patientName = patientSnapshot.getString("fullName");
-            Date patientBirthday = patientSnapshot.getDate("dateOfBirth");
-            String patientGender = patientSnapshot.getString("gender");
 
             // add booking to patient's upcoming appointments
             Map<String, Object> appointmentData = new HashMap<>();
@@ -72,10 +70,10 @@ public class BookingService {
         }
     }
 
-    public void finishAppointment(String doctorUid, Date date, String time, String diagnosis, String covidSymptomDetails, String testResults, String medicalHistory, String insuranceDetails) throws ExecutionException, InterruptedException {
+    public void finishAppointment(String patientUid, Date date, String time, String diagnosis, String covidSymptomDetails, String testResults, String insuranceDetails) throws ExecutionException, InterruptedException {
         try {
             Firestore dbFirestore = FirestoreClient.getFirestore();
-            String patientUid = UserService.getInstance().globalUid;
+            String doctorUid = UserService.getInstance().globalUid;
 
             // Get doctor database
             DocumentReference docRef = dbFirestore.collection("Doctors").document(doctorUid);
@@ -88,7 +86,7 @@ public class BookingService {
             String patientName = patientSnapshot.getString("fullName");
 
             // remove booking from patient's upcoming appointments
-            patientRef.update("patientUpcomingAppointments", FieldValue.arrayRemove(getPatientAppointmentData(patientUid, doctorUid, date, time))).get();
+            patientRef.update("patientUpcomingAppointments", FieldValue.arrayRemove(getPatientAppointmentData(doctorUid, patientUid, date, time))).get();
 
             // add booking to patient's appointments history
             Map<String, Object> appointmentData = new HashMap<>();
@@ -96,12 +94,11 @@ public class BookingService {
             appointmentData.put("diagnosis", diagnosis);
             appointmentData.put("covidSymptomsDetails", covidSymptomDetails);
             appointmentData.put("testResults", testResults);
-            appointmentData.put("medicalHistory", medicalHistory);
             appointmentData.put("insuranceDetails", insuranceDetails);
             patientRef.update("patientAppointmentHistory", FieldValue.arrayUnion(appointmentData)).get();
 
             // remove booking from doctor's upcoming appointments
-            docRef.update("doctorUpcomingAppointments", FieldValue.arrayRemove(getDoctorAppointmentData(patientUid, doctorUid, date, time))).get();
+            docRef.update("doctorUpcomingAppointments", FieldValue.arrayRemove(getDoctorAppointmentData(doctorUid, patientUid, date, time))).get();
 
             // add booking to doctor's appointments history
             Map<String, Object> patientData = new HashMap<>();
@@ -109,7 +106,6 @@ public class BookingService {
             patientData.put("diagnosis", diagnosis);
             patientData.put("covidSymptomsDetails", covidSymptomDetails);
             patientData.put("testResults", testResults);
-            patientData.put("medicalHistory", medicalHistory);
             patientData.put("insuranceDetails", insuranceDetails);
             docRef.update("doctorAppointmentHistory", FieldValue.arrayUnion(patientData)).get();
         } catch (InterruptedException | ExecutionException | NullPointerException e) {
@@ -118,7 +114,7 @@ public class BookingService {
         }
     }
 
-    private Map<String, Object> getPatientAppointmentData(String patientUid, String doctorUid, Date date, String time) throws ExecutionException, InterruptedException {
+    private Map<String, Object> getPatientAppointmentData(String doctorUid, String patientUid, Date date, String time) throws ExecutionException, InterruptedException {
         Firestore checkFirestore = FirestoreClient.getFirestore();
         DocumentReference checkRef = checkFirestore.collection("Patients").document(patientUid);
         DocumentSnapshot checkSnapshot = checkRef.get().get();
@@ -142,7 +138,7 @@ public class BookingService {
         return null;
     }
 
-    private Map<String, Object> getDoctorAppointmentData(String patientUid, String doctorUid, Date date, String time) throws ExecutionException, InterruptedException {
+    private Map<String, Object> getDoctorAppointmentData(String doctorUid, String patientUid, Date date, String time) throws ExecutionException, InterruptedException {
         Firestore checkFirestore = FirestoreClient.getFirestore();
         DocumentReference checkRef = checkFirestore.collection("Doctors").document(doctorUid);
         DocumentSnapshot checkSnapshot = checkRef.get().get();

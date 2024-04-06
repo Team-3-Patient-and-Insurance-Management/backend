@@ -13,10 +13,12 @@ public class Config implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "http://localhost:3000",
-                        "http://localhost:3001",
-                        "patientinsurancemanagement.web.app",
-                        "patientinsurancemanagement.firebaseapp.com"
+                        "https://localhost:3000",
+                        "https://localhost:3001",
+                        "localhost:3000",
+                        "localhost:3001",
+                        "https://patientinsurancemanagement.web.app",
+                        "https://patientinsurancemanagement.firebaseapp.com"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
