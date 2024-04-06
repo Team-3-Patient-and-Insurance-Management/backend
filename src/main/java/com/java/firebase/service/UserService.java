@@ -12,6 +12,7 @@ import com.java.firebase.model.Doctor.Doctor;
 import com.java.firebase.model.InsuranceProvider.InsuranceProvider;
 import com.java.firebase.model.Patient.Patient;
 import com.java.firebase.model.User;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -81,19 +82,20 @@ public class UserService {
 
     }
 
-    public String signInUser(String idToken) {
+    public String signInUser(String jsonToken) {
         try {
+            JSONObject jsonObject = new JSONObject(jsonToken);
+            String idToken = jsonObject.getString("idToken");
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
             this.globalToken = idToken;
             this.globalUid = decodedToken.getUid();
             this.globalEmail = decodedToken.getEmail();
-
-            User user =  getUser(this.globalUid);
+            User user = getUser(this.globalUid);
             return Twilio2FAController.generateOTP(user.getPhoneNumber());
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
             return "Error signing in user: " + e.getMessage();
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
