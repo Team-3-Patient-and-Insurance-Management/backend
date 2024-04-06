@@ -14,6 +14,8 @@ public class Config implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "https://localhost:3000",
+                        "http://localhost:3000",
+                        "http://localhost:3001",
                         "https://localhost:3001",
                         "localhost:3000",
                         "localhost:3001",
