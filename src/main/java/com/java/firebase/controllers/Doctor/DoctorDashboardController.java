@@ -2,8 +2,10 @@ package com.java.firebase.controllers.Doctor;
 
 import com.java.firebase.model.Doctor.DoctorAppointmentHistory;
 import com.java.firebase.model.Doctor.DoctorUpcomingAppointments;
+import com.java.firebase.model.Patient.Patient;
 import com.java.firebase.model.Patient.PatientAppointmentHistory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
+@CrossOrigin
 public class DoctorDashboardController {
     private final DoctorDashboardService doctorDashboardService;
 
@@ -31,8 +34,8 @@ public class DoctorDashboardController {
         return doctorDashboardService.getDoctorAppointmentHistory();
     }
 
-    @GetMapping("/patientAppointmentHistory")
-    public List<PatientAppointmentHistory> getPatientAppointmentHistory(@RequestParam String patientUid) throws ExecutionException, InterruptedException {
-        return doctorDashboardService.getPatientAppointmentHistory(patientUid);
+    @GetMapping("/patientDetails")
+    public Patient getPatientDetails(@RequestParam String patientUid) throws ExecutionException, InterruptedException {
+        return doctorDashboardService.getPatientDetails(patientUid);
     }
 }

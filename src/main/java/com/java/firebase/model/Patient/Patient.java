@@ -13,9 +13,10 @@ public class Patient extends User {
 
     public Patient(User user) {
         super(user.getFirstName(), user.getLastName(), user.getGender(), user.getPhoneNumber(),
-                user.getDateOfBirth(), user.getStreetAddress(), user.getCountry(), user.getState(), user.getCity(),
-                user.getZipCode(), "patient", null, null, null, null,
-                null, null, user.getIs2FAEnabled(), user.getPhoneNumberVerified());
+                user.getDateOfBirth(), user.getProfilePictureUrl(), user.getStreetAddress(), user.getCountry(),
+                user.getState(), user.getCity(), user.getZipCode(), "patient", null,
+                null, null, null, null,
+                user.getIs2FAEnabled(), user.getPhoneNumberVerified());
         this.patientAppointmentHistory = new ArrayList<>();
         this.patientUpcomingAppointments = new ArrayList<>();
         this.patientInsuranceProviders = new ArrayList<>();

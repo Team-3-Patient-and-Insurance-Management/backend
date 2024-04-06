@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 
 @CrossOrigin
 @RestController
+@CrossOrigin
 public class DoctorSearchController {
 
     @Autowired

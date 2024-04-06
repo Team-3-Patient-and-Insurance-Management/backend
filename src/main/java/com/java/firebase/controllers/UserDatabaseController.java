@@ -23,33 +23,26 @@ public class UserDatabaseController {
                              @RequestBody User user) throws ExecutionException, InterruptedException {
         return userService.signUpUser(email, password, user);
     }
-
     @PostMapping("/signIn")
-    public String signInUser(@RequestParam String idToken) {
+    public String signInUser(@RequestBody String idToken) {
         return userService.signInUser(idToken);
     }
-
     @PostMapping("/verifyPin")
     public String verifyPin(@RequestParam String pinCode) {
         return userService.verifyPin(pinCode);
     }
-
-
     @GetMapping("/getUser")
     public User getUser(@RequestParam String userID) throws ExecutionException, InterruptedException {
         return userService.getUser(userID);
     }
-
     @GetMapping("/getUserGlobal")
     public User getUser() throws ExecutionException, InterruptedException {
         return userService.getUser();
     }
-
     @PutMapping("/updateUser")
     public ResponseEntity<String> updateUser(@RequestParam String userID, @RequestBody User newUser) {
         return userService.updateUser(userID, newUser);
     }
-
     @GetMapping("/testUser")
     public ResponseEntity<String> testUser() {
         return ResponseEntity.ok("User Database Controller is working");
