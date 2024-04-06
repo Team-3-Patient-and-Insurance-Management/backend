@@ -3,6 +3,7 @@ package com.java.firebase.model.InsuranceProvider;
 import com.java.firebase.model.User;
 
 import java.util.Date;
+import java.util.List;
 
 public class InsuranceProvider extends User {
     private String uid;
