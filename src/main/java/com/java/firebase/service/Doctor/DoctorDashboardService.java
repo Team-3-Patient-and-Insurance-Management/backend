@@ -5,7 +5,6 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
 import com.java.firebase.model.Doctor.Doctor;
-import com.java.firebase.model.Doctor.DoctorAppointmentHistory;
 import com.java.firebase.model.Doctor.DoctorUpcomingAppointments;
 import com.java.firebase.model.Patient.Patient;
 import com.java.firebase.model.Patient.PatientAppointmentHistory;
@@ -24,19 +23,6 @@ public class DoctorDashboardService {
         Doctor doctor = doctorSnapshot.toObject(Doctor.class);
         if (doctor != null) {
             return doctor.getDoctorUpcomingAppointments();
-        }
-        else {
-            return null;
-        }
-    }
-
-    public List<DoctorAppointmentHistory> getDoctorAppointmentHistory() throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference doctorRef = dbFirestore.collection("Doctors").document(UserService.getInstance().globalUid);
-        DocumentSnapshot doctorSnapshot = doctorRef.get().get();
-        Doctor doctor = doctorSnapshot.toObject(Doctor.class);
-        if (doctor != null) {
-            return doctor.getDoctorAppointmentHistory();
         }
         else {
             return null;

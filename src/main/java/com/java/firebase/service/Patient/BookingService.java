@@ -82,11 +82,6 @@ public class BookingService {
 
             // Get patient database
             DocumentReference patientRef = dbFirestore.collection("Patients").document(patientUid);
-            DocumentSnapshot patientSnapshot = patientRef.get().get();
-            String patientName = patientSnapshot.getString("fullName");
-
-            // remove booking from patient's upcoming appointments
-            patientRef.update("patientUpcomingAppointments", FieldValue.arrayRemove(getPatientAppointmentData(doctorUid, patientUid, date, time))).get();
 
             // add booking to patient's appointments history
             Map<String, Object> appointmentData = new HashMap<>();
@@ -99,15 +94,6 @@ public class BookingService {
 
             // remove booking from doctor's upcoming appointments
             docRef.update("doctorUpcomingAppointments", FieldValue.arrayRemove(getDoctorAppointmentData(doctorUid, patientUid, date, time))).get();
-
-            // add booking to doctor's appointments history
-            Map<String, Object> patientData = new HashMap<>();
-            patientData.put("patientName", patientName);
-            patientData.put("diagnosis", diagnosis);
-            patientData.put("covidSymptomsDetails", covidSymptomDetails);
-            patientData.put("testResults", testResults);
-            patientData.put("insuranceDetails", insuranceDetails);
-            docRef.update("doctorAppointmentHistory", FieldValue.arrayUnion(patientData)).get();
         } catch (InterruptedException | ExecutionException | NullPointerException e) {
             e.printStackTrace();
             throw new RuntimeException("Error finishing appointment", e);
