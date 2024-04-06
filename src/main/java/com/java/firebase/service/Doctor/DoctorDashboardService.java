@@ -22,6 +22,7 @@ public class DoctorDashboardService {
         DocumentReference doctorRef = dbFirestore.collection("Doctors").document(UserService.getInstance().globalUid);
         DocumentSnapshot doctorSnapshot = doctorRef.get().get();
         Doctor doctor = doctorSnapshot.toObject(Doctor.class);
+        System.out.println("In doctorIupciomingAppointments");
         if (doctor != null) {
             return doctor.getDoctorUpcomingAppointments();
         }
