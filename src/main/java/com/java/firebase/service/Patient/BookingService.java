@@ -86,6 +86,8 @@ public class BookingService {
             // add booking to patient's appointments history
             Map<String, Object> appointmentData = new HashMap<>();
             appointmentData.put("doctorName", doctorName);
+            appointmentData.put("date", date);
+            appointmentData.put("time", time);
             appointmentData.put("diagnosis", diagnosis);
             appointmentData.put("covidSymptomsDetails", covidSymptomDetails);
             appointmentData.put("testResults", testResults);
@@ -98,30 +100,6 @@ public class BookingService {
             e.printStackTrace();
             throw new RuntimeException("Error finishing appointment", e);
         }
-    }
-
-    private Map<String, Object> getPatientAppointmentData(String doctorUid, String patientUid, Date date, String time) throws ExecutionException, InterruptedException {
-        Firestore checkFirestore = FirestoreClient.getFirestore();
-        DocumentReference checkRef = checkFirestore.collection("Patients").document(patientUid);
-        DocumentSnapshot checkSnapshot = checkRef.get().get();
-
-        if (checkSnapshot.exists()) {
-            if (checkSnapshot.contains("patientUpcomingAppointments")) {
-                List<Map<String, Object>> patientAppointments = (List<Map<String, Object>>) checkSnapshot.get("patientUpcomingAppointments");
-                for (Map<String, Object> appointment : patientAppointments) {
-                    Timestamp appointmentTimestamp = (Timestamp) appointment.get("date");
-                    Date appointmentDate = appointmentTimestamp.toDate();
-                    if (appointment.get("doctorUid").equals(doctorUid) && appointment.get("time").equals(time) && appointmentDate.equals(date)) {
-                        return appointment;
-                    }
-                }
-            } else {
-                throw new RuntimeException("Error getting patient upcoming appointments");
-            }
-        } else {
-            throw new RuntimeException("patient snapshot doesn't exist");
-        }
-        return null;
     }
 
     private Map<String, Object> getDoctorAppointmentData(String doctorUid, String patientUid, Date date, String time) throws ExecutionException, InterruptedException {

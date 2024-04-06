@@ -1,13 +1,14 @@
 package com.java.firebase.controllers.Patient;
 
+import com.java.firebase.model.Doctor.DoctorRatings;
 import com.java.firebase.model.Patient.PatientInsuranceProviders;
 import com.java.firebase.model.Patient.PatientUpcomingAppointments;
 import com.java.firebase.service.Patient.PatientDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -30,5 +31,14 @@ public class PatientDashboardController {
     public List<PatientInsuranceProviders> getPatientInsuranceProviders() throws ExecutionException, InterruptedException {
         return patientDashboardService.getPatientInsuranceProviders();
     }
+
+    @PostMapping("/postDoctorReview")
+    public void postDoctorReview(@RequestParam String doctorUid,
+                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date,
+                                 @RequestParam String time,
+                                 @RequestBody DoctorRatings doctorRatings) throws ExecutionException, InterruptedException {
+        patientDashboardService.postDoctorReview(doctorUid, date, time, doctorRatings.getReview(), doctorRatings.getStars());
+    }
+
 
 }

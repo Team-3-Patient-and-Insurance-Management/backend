@@ -2,7 +2,7 @@ package com.java.firebase.model.Doctor;
 
 public class DoctorRatings {
     private String stars;
-    private String description;
+    private String review;
 
     public String getStars() {
         return stars;
@@ -12,11 +12,11 @@ public class DoctorRatings {
         this.stars = stars;
     }
 
-    public String getDescription() {
-        return description;
+    public String getReview() {
+        return review;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setReview(String review) {
+        this.review = review;
     }
 }
