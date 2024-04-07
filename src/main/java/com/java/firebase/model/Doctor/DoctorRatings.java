@@ -1,8 +1,26 @@
 package com.java.firebase.model.Doctor;
 
 public class DoctorRatings {
+    private String title;
+    private String patientName;
     private String stars;
     private String review;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
 
     public String getStars() {
         return stars;

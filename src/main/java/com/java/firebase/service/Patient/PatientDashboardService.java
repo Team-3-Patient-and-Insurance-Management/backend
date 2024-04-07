@@ -47,12 +47,13 @@ public class PatientDashboardService {
         }
     }
 
-    public void postDoctorReview(String doctorUid, Date date, String time, String review, String stars) throws ExecutionException, InterruptedException {
+    public void postDoctorReview(String doctorUid, Date date, String time, String title, String review, String stars) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getInstance().globalUid);
         DocumentSnapshot patientSnapshot = patientRef.get().get();
         String patientName = patientSnapshot.getString("fullName");
         Map<String, Object> doctorReview = new HashMap<>();
+        doctorReview.put("title", title);
         doctorReview.put("patientName", patientName);
         doctorReview.put("review", review);
         doctorReview.put("stars", stars);
