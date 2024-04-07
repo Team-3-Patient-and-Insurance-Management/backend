@@ -1,21 +1,18 @@
 package com.java.firebase.service.Patient;
 
+import com.google.api.core.ApiFuture;
 import com.google.cloud.Timestamp;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.FieldValue;
-import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import com.java.firebase.model.Doctor.Doctor;
+import com.java.firebase.model.InsuranceProvider.InsuranceProvider;
 import com.java.firebase.model.Patient.Patient;
 import com.java.firebase.model.Patient.PatientInsuranceProviders;
 import com.java.firebase.model.Patient.PatientUpcomingAppointments;
 import com.java.firebase.service.UserService;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.text.DecimalFormat;
 
@@ -45,6 +42,53 @@ public class PatientDashboardService {
         else {
             return null;
         }
+    }
+
+    public List<InsuranceProvider> getAllInsuranceProviders() throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        CollectionReference insuranceProvidersCollection = dbFirestore.collection("Insurance Providers");
+        Query query = insuranceProvidersCollection;
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        List<InsuranceProvider> insuranceProviders = new ArrayList<>();
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            InsuranceProvider insuranceProvider = document.toObject(InsuranceProvider.class);
+            insuranceProviders.add(insuranceProvider);
+        }
+        return insuranceProviders;
+    }
+
+    public void addInsuranceProvider(String insuranceProviderUid, String planId, String planName, String description, double premium, double deductible, boolean medicalCoverage, boolean dentalCoverage, boolean visionCoverage) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        String patientUid = UserService.getInstance().globalUid;
+
+        // Get Patient's Database
+        DocumentReference patientRef = dbFirestore.collection("Patients").document(patientUid);
+        DocumentSnapshot patientSnapshot = patientRef.get().get();
+        String patientName = patientSnapshot.getString("fullName");
+
+        // Get Insurance Provider's Database
+        DocumentReference insuranceProviderRef = dbFirestore.collection("Insurance Providers").document(insuranceProviderUid);
+
+        // Add plan to patient's database
+        Map<String, Object> addInsurancePlan = new HashMap<>();
+        addInsurancePlan.put("insuranceProviderUid", insuranceProviderUid);
+        addInsurancePlan.put("insurancePlanId", planId);
+        addInsurancePlan.put("planName", planName);
+        addInsurancePlan.put("description", description);
+        addInsurancePlan.put("premium", premium);
+        addInsurancePlan.put("deductible", deductible);
+        addInsurancePlan.put("medicalCoverage", medicalCoverage);
+        addInsurancePlan.put("dentalCoverage", dentalCoverage);
+        addInsurancePlan.put("visionCoverage", visionCoverage);
+        patientRef.update("patientInsuranceProviders", FieldValue.arrayUnion(addInsurancePlan)).get();
+
+        // Add patient to insurance provider's database
+        Map<String, Object> addPatient = new HashMap<>();
+        addPatient.put("patientUid", patientUid);
+        addPatient.put("patientName", patientName);
+        addPatient.put("planName", planName);
+        addPatient.put("description", description);
+        insuranceProviderRef.update("clients", FieldValue.arrayUnion(addPatient)).get();
     }
 
     public void postDoctorReview(String doctorUid, Date date, String time, String title, String review, String stars) throws ExecutionException, InterruptedException {

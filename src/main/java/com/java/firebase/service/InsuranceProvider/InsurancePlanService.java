@@ -22,7 +22,7 @@ public class InsurancePlanService {
         DocumentSnapshot insurancePlansSnapshot = insurancePlansRef.get().get();
         InsuranceProvider insuranceProvider = insurancePlansSnapshot.toObject(InsuranceProvider.class);
         if (insuranceProvider != null) {
-            return insuranceProvider.getInsurancePlan();
+            return insuranceProvider.getInsurancePlans();
         } else {
             return null;
         }

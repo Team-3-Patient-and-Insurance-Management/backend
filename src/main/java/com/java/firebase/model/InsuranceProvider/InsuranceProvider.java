@@ -37,10 +37,10 @@ public class InsuranceProvider extends User {
     public void setClients(List<Clients> clients) {
         this.clients = clients;
     }
-    public List<InsurancePlan> getInsurancePlan() {
+    public List<InsurancePlan> getInsurancePlans() {
         return insurancePlans;
     }
-    public void setInsurancePlan(List<InsurancePlan> insurancePlans) {
+    public void setInsurancePlans(List<InsurancePlan> insurancePlans) {
         this.insurancePlans = insurancePlans;
     }
 }

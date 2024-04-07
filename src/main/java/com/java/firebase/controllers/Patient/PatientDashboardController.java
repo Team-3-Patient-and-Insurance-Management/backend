@@ -1,6 +1,8 @@
 package com.java.firebase.controllers.Patient;
 
 import com.java.firebase.model.Doctor.DoctorRatings;
+import com.java.firebase.model.InsuranceProvider.InsurancePlan;
+import com.java.firebase.model.InsuranceProvider.InsuranceProvider;
 import com.java.firebase.model.Patient.PatientInsuranceProviders;
 import com.java.firebase.model.Patient.PatientUpcomingAppointments;
 import com.java.firebase.service.Patient.PatientDashboardService;
@@ -30,6 +32,16 @@ public class PatientDashboardController {
     @GetMapping("/patientInsuranceProviders")
     public List<PatientInsuranceProviders> getPatientInsuranceProviders() throws ExecutionException, InterruptedException {
         return patientDashboardService.getPatientInsuranceProviders();
+    }
+
+    @GetMapping("/allInsuranceProviders")
+    public List<InsuranceProvider> getAllInsuranceProviders() throws ExecutionException, InterruptedException {
+        return patientDashboardService.getAllInsuranceProviders();
+    }
+
+    @PostMapping("/addInsuranceProvider")
+    public void addInsuranceProvider(@RequestParam String insuranceProviderUid, @RequestBody InsurancePlan insurancePlan) throws ExecutionException, InterruptedException {
+        patientDashboardService.addInsuranceProvider(insuranceProviderUid, insurancePlan.getPlanId(), insurancePlan.getPlanName(), insurancePlan.getDescription(), insurancePlan.getPremium(), insurancePlan.getDeductible(), insurancePlan.isMedicalCoverage(), insurancePlan.isDentalCoverage(), insurancePlan.isVisionCoverage());
     }
 
     @PostMapping("/postDoctorReview")

@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 public class UserService {
     private static UserService instance;
     public String globalToken;
-    public String globalUid;
+    public String globalUid = "NxBEz8Mb9sbDvNlPi5kJRunJEnO2";
     public String globalEmail;
     private UserService() {
     }
