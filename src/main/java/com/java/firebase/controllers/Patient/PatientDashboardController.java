@@ -37,7 +37,7 @@ public class PatientDashboardController {
                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date,
                                  @RequestParam String time,
                                  @RequestBody DoctorRatings doctorRatings) throws ExecutionException, InterruptedException {
-        patientDashboardService.postDoctorReview(doctorUid, date, time, doctorRatings.getReview(), doctorRatings.getStars());
+        patientDashboardService.postDoctorReview(doctorUid, date, time, doctorRatings.getTitle(), doctorRatings.getReview(), doctorRatings.getStars());
     }
 
 
