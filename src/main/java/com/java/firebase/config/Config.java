@@ -20,7 +20,9 @@ public class Config implements WebMvcConfigurer {
                         "localhost:3000",
                         "localhost:3001",
                         "https://patientinsurancemanagement.web.app",
-                        "https://patientinsurancemanagement.firebaseapp.com"
+                        "https://patientinsurancemanagement.firebaseapp.com",
+                        "https://team-3-patient-and-insurance-management.github.io/frontend/",
+                        "https://team-3-patient-and-insurance-management.github.io"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
