@@ -1,5 +1,6 @@
 package com.java.firebase.controllers.Doctor;
 
+import com.java.firebase.model.Doctor.DoctorRatings;
 import com.java.firebase.model.Doctor.DoctorUpcomingAppointments;
 import com.java.firebase.model.Patient.Patient;
 import com.java.firebase.model.Patient.PatientAppointmentHistory;
@@ -32,5 +33,10 @@ public class DoctorDashboardController {
     @GetMapping("/patientDetails")
     public Patient getPatientDetails(@RequestParam String patientUid) throws ExecutionException, InterruptedException {
         return doctorDashboardService.getPatientDetails(patientUid);
+    }
+
+    @GetMapping("/doctorRatings")
+    public List<DoctorRatings> getDoctorRatings() throws ExecutionException, InterruptedException {
+        return doctorDashboardService.getDoctorRatings();
     }
 }

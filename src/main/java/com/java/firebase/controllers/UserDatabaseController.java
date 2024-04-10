@@ -31,17 +31,17 @@ public class UserDatabaseController {
     public String verifyPin(@RequestParam String pinCode) {
         return userService.verifyPin(pinCode);
     }
+//    @GetMapping("/getUser")
+//    public User getUser(@RequestParam String userID) throws ExecutionException, InterruptedException {
+//        return userService.getUser(userID);
+//    }
     @GetMapping("/getUser")
-    public User getUser(@RequestParam String userID) throws ExecutionException, InterruptedException {
-        return userService.getUser(userID);
-    }
-    @GetMapping("/getUserGlobal")
     public User getUser() throws ExecutionException, InterruptedException {
         return userService.getUser();
     }
     @PutMapping("/updateUser")
-    public ResponseEntity<String> updateUser(@RequestParam String userID, @RequestBody User newUser) {
-        return userService.updateUser(userID, newUser);
+    public ResponseEntity<String> updateUser(@RequestBody User newUser) {
+        return userService.updateUser(newUser);
     }
     @GetMapping("/testUser")
     public ResponseEntity<String> testUser() {

@@ -231,13 +231,13 @@ public class UserService {
         return roleCollection;
     }
 
-    public ResponseEntity<String> updateUser(String uid, User updatedUser) {
+    public ResponseEntity<String> updateUser(User updatedUser) {
         try {
             System.out.println("In update user");
             Firestore dbFirestore = FirestoreClient.getFirestore();
 
             // Get the existing user details
-            User existingUser = getUser(uid);
+            User existingUser = getUser(globalUid);
             if (existingUser == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -247,7 +247,6 @@ public class UserService {
             if ("doctor".equals(role)) {
                 existingUser.setDoctorLicense(updatedUser.getDoctorLicense());
                 existingUser.setSpecialization(updatedUser.getSpecialization());
-                System.out.println("In Doctor");
             } else if ("insuranceProvider".equals(role)) {
                 existingUser.setCompany(updatedUser.getCompany());
                 existingUser.setCompanyLicense(updatedUser.getCompanyLicense());
@@ -263,6 +262,7 @@ public class UserService {
             existingUser.setState(updatedUser.getState());
             existingUser.setCity(updatedUser.getCity());
             existingUser.setZipCode(updatedUser.getZipCode());
+            existingUser.setFullName(updatedUser.getFirstName() + " " + updatedUser.getLastName());
 
             // Determine the role collection
             String roleCollection = getRoleCollection(role);
@@ -270,19 +270,16 @@ public class UserService {
                 return ResponseEntity.badRequest().body("Role collection not found");
             }
 
-            // Update the user document in Firestore
-            DocumentReference roleDocRef = dbFirestore.collection(roleCollection).document(uid);
+            DocumentReference roleDocRef = dbFirestore.collection(roleCollection).document(globalUid);
             ApiFuture<WriteResult> writeResult = roleDocRef.set(existingUser);
-            writeResult.get(); // Wait for the write operation to complete
-            System.out.println("USER UPDATED");
+            writeResult.get();
             return ResponseEntity.ok("User updated successfully");
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-
+    
     public String getGlobalUid() {
         return globalUid;
     }
