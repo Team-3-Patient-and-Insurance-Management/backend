@@ -88,6 +88,6 @@ public class DoctorUpcomingAppointments {
     }
     public String getFormattedDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(this.date);
+        return this.date != null ? sdf.format(this.date) : null;
     }
 }
