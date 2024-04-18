@@ -20,6 +20,8 @@ public class DoctorDashboardService {
     public List<DoctorUpcomingAppointments> getDoctorUpcomingAppointments() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference doctorRef = dbFirestore.collection("Doctors").document(UserService.getInstance().globalUid);
+        System.out.println("Doctor UID: " + UserService.getInstance().globalUid);
+        System.out.println("its here in upcoming appointments");
         DocumentSnapshot doctorSnapshot = doctorRef.get().get();
         Doctor doctor = doctorSnapshot.toObject(Doctor.class);
         if (doctor != null) {
@@ -46,6 +48,8 @@ public class DoctorDashboardService {
     public List<DoctorRatings> getDoctorRatings() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DocumentReference doctorRef = dbFirestore.collection("Doctors").document(UserService.getInstance().globalUid);
+        System.out.println("Doctor UID: " + UserService.getInstance().globalUid);
+        System.out.println("its here in doctor ratings");
         DocumentSnapshot doctorSnapshot = doctorRef.get().get();
         Doctor doctor = doctorSnapshot.toObject(Doctor.class);
         if (doctor != null) {

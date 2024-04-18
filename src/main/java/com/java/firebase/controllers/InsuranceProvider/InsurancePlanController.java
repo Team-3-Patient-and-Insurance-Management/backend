@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
+@CrossOrigin
 public class InsurancePlanController {
 
     private final InsurancePlanService insurancePlanService;
