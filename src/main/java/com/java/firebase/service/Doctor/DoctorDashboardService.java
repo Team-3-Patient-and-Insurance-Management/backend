@@ -50,6 +50,7 @@ public class DoctorDashboardService {
         DocumentReference doctorRef = dbFirestore.collection("Doctors").document(UserService.getInstance().globalUid);
         System.out.println("Doctor UID: " + UserService.getInstance().globalUid);
         System.out.println("its here in doctor ratings");
+
         DocumentSnapshot doctorSnapshot = doctorRef.get().get();
         Doctor doctor = doctorSnapshot.toObject(Doctor.class);
         if (doctor != null) {
