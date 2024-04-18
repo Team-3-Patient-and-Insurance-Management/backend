@@ -25,16 +25,30 @@ import java.util.concurrent.ExecutionException;
 public class UserService {
     private static UserService instance;
     public String globalToken;
-    public String globalUid;
-    public String globalEmail;
+    public static String globalUid;
+    public static String globalEmail;
     private UserService() {
     }
-    public static synchronized UserService getInstance() {
-        if (instance == null) {
-            instance = new UserService();
-        }
-        return instance;
+
+    private String getGlobalToken() {
+        return globalToken;
     }
+    public void setGlobalToken(String globalToken) {
+        this.globalToken = globalToken;
+    }
+    public static String getGlobalUid() {
+        return globalUid;
+    }
+    public void setGlobalUid(String globalUid) {
+        this.globalUid = globalUid;
+    }
+    public static String getGlobalEmail() {
+        return globalEmail;
+    }
+    public void setGlobalEmail(String globalEmail) {
+        this.globalEmail = globalEmail;
+    }
+
 
     public String signUpUser(String email, String password, User user) throws ExecutionException, InterruptedException {
         try {
@@ -91,11 +105,7 @@ public class UserService {
             this.globalUid = decodedToken.getUid();
             this.globalEmail = decodedToken.getEmail();
             User user = getUser(this.globalUid);
-            System.out.println("User role: " + user.getRole());
-            System.out.println("User email: " + this.globalEmail);
-            System.out.println("User uid: " + this.globalUid);
-            System.out.println("User global token: " + this.globalToken);
-            return this.globalUid;
+            return Twilio2FAController.generateOTP(user.getPhoneNumber());
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
             return "Error signing in user: " + e.getMessage();
@@ -282,14 +292,6 @@ public class UserService {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-    
-    public String getGlobalUid() {
-        return globalUid;
-    }
-
-    public String getGlobalEmail() {
-        return globalEmail;
     }
 
 }

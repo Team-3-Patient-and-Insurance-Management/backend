@@ -20,7 +20,7 @@ import java.text.DecimalFormat;
 public class PatientDashboardService {
     public List<PatientUpcomingAppointments> getPatientUpcomingAppointments() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getInstance().globalUid);
+        DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getGlobalUid());
         DocumentSnapshot patientSnapshot = patientRef.get().get();
         Patient patient = patientSnapshot.toObject(Patient.class);
         if (patient != null) {
@@ -33,7 +33,8 @@ public class PatientDashboardService {
 
     public List<PatientInsuranceProviders> getPatientInsuranceProviders() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getInstance().globalUid);
+        DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getGlobalUid());
+        System.out.println("Patient UID: " + UserService.getGlobalUid());
         DocumentSnapshot patientSnapshot = patientRef.get().get();
         Patient patient = patientSnapshot.toObject(Patient.class);
         if (patient != null) {
@@ -59,7 +60,8 @@ public class PatientDashboardService {
 
     public void addInsuranceProvider(String insuranceProviderUid, String insurancePlanId) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        String patientUid = UserService.getInstance().globalUid;
+        String patientUid = UserService.getGlobalUid();
+        System.out.println("Patient UID: " + UserService.getGlobalUid());
 
         // Get Patient's Database
         DocumentReference patientRef = dbFirestore.collection("Patients").document(patientUid);
@@ -114,7 +116,7 @@ public class PatientDashboardService {
 
     public void postDoctorReview(String doctorUid, Date date, String time, String title, String review, String stars) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getInstance().globalUid);
+        DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getGlobalUid());
         DocumentSnapshot patientSnapshot = patientRef.get().get();
         String patientName = patientSnapshot.getString("fullName");
         Map<String, Object> doctorReview = new HashMap<>();
@@ -141,7 +143,7 @@ public class PatientDashboardService {
         docRef.update("averageRating", String.valueOf(formattedAverageRating)).get();
 
         // remove booking from doctor's upcoming appointments
-        patientRef.update("patientUpcomingAppointments", FieldValue.arrayRemove(getPatientAppointmentData(doctorUid, UserService.getInstance().globalUid, date, time))).get();
+        patientRef.update("patientUpcomingAppointments", FieldValue.arrayRemove(getPatientAppointmentData(doctorUid, UserService.getGlobalUid(), date, time))).get();
     }
 
     private Map<String, Object> getPatientAppointmentData(String doctorUid, String patientUid, Date date, String time) throws ExecutionException, InterruptedException {

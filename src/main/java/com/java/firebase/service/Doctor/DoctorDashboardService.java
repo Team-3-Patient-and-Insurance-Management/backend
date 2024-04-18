@@ -19,8 +19,8 @@ import java.util.concurrent.ExecutionException;
 public class DoctorDashboardService {
     public List<DoctorUpcomingAppointments> getDoctorUpcomingAppointments() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference doctorRef = dbFirestore.collection("Doctors").document(UserService.getInstance().globalUid);
-        System.out.println("Doctor UID: " + UserService.getInstance().globalUid);
+        DocumentReference doctorRef = dbFirestore.collection("Doctors").document(UserService.getGlobalUid());
+        System.out.println("Doctor UID: " + UserService.getGlobalUid());
         System.out.println("its here in upcoming appointments");
         DocumentSnapshot doctorSnapshot = doctorRef.get().get();
         Doctor doctor = doctorSnapshot.toObject(Doctor.class);
@@ -34,7 +34,7 @@ public class DoctorDashboardService {
 
     public Patient getPatientDetails(String patientUid) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getInstance().globalUid);
+        DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getGlobalUid());
         DocumentSnapshot patientSnapshot = patientRef.get().get();
         Patient patient = patientSnapshot.toObject(Patient.class);
         if (patient != null) {
@@ -47,8 +47,8 @@ public class DoctorDashboardService {
 
     public List<DoctorRatings> getDoctorRatings() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference doctorRef = dbFirestore.collection("Doctors").document(UserService.getInstance().globalUid);
-        System.out.println("Doctor UID: " + UserService.getInstance().globalUid);
+        DocumentReference doctorRef = dbFirestore.collection("Doctors").document(UserService.getGlobalUid());
+        System.out.println("Doctor UID: " + UserService.getGlobalUid());
         System.out.println("its here in doctor ratings");
 
         DocumentSnapshot doctorSnapshot = doctorRef.get().get();

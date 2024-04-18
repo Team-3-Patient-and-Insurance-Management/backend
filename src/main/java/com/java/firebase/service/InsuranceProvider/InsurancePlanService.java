@@ -18,7 +18,7 @@ public class InsurancePlanService {
 
     public List<InsurancePlan> getAllInsurancePlans() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference insurancePlansRef = dbFirestore.collection("Insurance Providers").document(UserService.getInstance().globalUid);
+        DocumentReference insurancePlansRef = dbFirestore.collection("Insurance Providers").document(UserService.getGlobalUid());
         DocumentSnapshot insurancePlansSnapshot = insurancePlansRef.get().get();
         InsuranceProvider insuranceProvider = insurancePlansSnapshot.toObject(InsuranceProvider.class);
         if (insuranceProvider != null) {
@@ -30,7 +30,7 @@ public class InsurancePlanService {
 
     public List<Clients> getAllClients() throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference insuranceRef = dbFirestore.collection("Insurance Providers").document(UserService.getInstance().globalUid);
+        DocumentReference insuranceRef = dbFirestore.collection("Insurance Providers").document(UserService.getGlobalUid());
         DocumentSnapshot insuranceSnapshot = insuranceRef.get().get();
         InsuranceProvider insuranceProvider = insuranceSnapshot.toObject(InsuranceProvider.class);
         if (insuranceProvider != null) {
@@ -44,7 +44,7 @@ public class InsurancePlanService {
     public void addInsurancePlan(String planName, String description, double premium, double deductible, boolean medicalCoverage, boolean dentalCoverage, boolean visionCoverage) throws ExecutionException, InterruptedException {
         try {
             Firestore dbFirestore = FirestoreClient.getFirestore();
-            String insuranceProviderId = UserService.getInstance().globalUid;
+            String insuranceProviderId = UserService.getGlobalUid();
             DocumentReference insuranceRef = dbFirestore.collection("Insurance Providers").document(insuranceProviderId);
             String planId = dbFirestore.collection("Insurance Providers").document().getId();
             Map<String, Object> insuranceData = new HashMap<>();

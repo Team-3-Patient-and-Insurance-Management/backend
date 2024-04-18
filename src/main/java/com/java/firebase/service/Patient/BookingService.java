@@ -28,8 +28,8 @@ public class BookingService {
     public boolean bookAppointment(String doctorUid, Date date, String time, String experiencedSymptoms, String closePhysicalContact, String positiveCovid90Days, String selfMonitor, String wantCovidTest) {
         try {
             Firestore dbFirestore = FirestoreClient.getFirestore();
-            String patientUid = UserService.getInstance().globalUid;
-            String patientEmail = UserService.getInstance().globalEmail;
+            String patientUid = UserService.getGlobalUid();
+            String patientEmail = UserService.getGlobalEmail();
 
             // Get doctor database
             DocumentReference docRef = dbFirestore.collection("Doctors").document(doctorUid);
@@ -73,7 +73,7 @@ public class BookingService {
     public void finishAppointment(String patientUid, Date date, String time, String diagnosis, String covidSymptomDetails, String testResults, String insuranceDetails) throws ExecutionException, InterruptedException {
         try {
             Firestore dbFirestore = FirestoreClient.getFirestore();
-            String doctorUid = UserService.getInstance().globalUid;
+            String doctorUid = UserService.getGlobalUid();
 
             // Get doctor database
             DocumentReference docRef = dbFirestore.collection("Doctors").document(doctorUid);
