@@ -44,6 +44,7 @@ public class Doctor extends User {
     }
 
     public List<DoctorUpcomingAppointments> getDoctorUpcomingAppointments() {
+        System.out.println("Doctor Upcoming Appointments: " + doctorUpcomingAppointments.getFirst().getPatientName());
         return doctorUpcomingAppointments;
     }
 
@@ -52,6 +53,7 @@ public class Doctor extends User {
     }
 
     public List<DoctorRatings> getDoctorRatings() {
+        System.out.println("Doctor Ratings: " + doctorRatings);
         return doctorRatings;
     }
 
