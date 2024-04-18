@@ -40,8 +40,8 @@ public class PatientDashboardController {
     }
 
     @PostMapping("/addInsuranceProvider")
-    public void addInsuranceProvider(@RequestParam String insuranceProviderUid, @RequestBody InsurancePlan insurancePlan) throws ExecutionException, InterruptedException {
-        patientDashboardService.addInsuranceProvider(insuranceProviderUid, insurancePlan.getPlanId(), insurancePlan.getPlanName(), insurancePlan.getDescription(), insurancePlan.getPremium(), insurancePlan.getDeductible(), insurancePlan.isMedicalCoverage(), insurancePlan.isDentalCoverage(), insurancePlan.isVisionCoverage());
+    public void addInsuranceProvider(@RequestParam String insuranceProviderUid, @RequestParam String insurancePlanId) throws ExecutionException, InterruptedException {
+        patientDashboardService.addInsuranceProvider(insuranceProviderUid, insurancePlanId);
     }
 
     @PostMapping("/postDoctorReview")

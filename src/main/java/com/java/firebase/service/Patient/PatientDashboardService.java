@@ -57,7 +57,7 @@ public class PatientDashboardService {
         return insuranceProviders;
     }
 
-    public void addInsuranceProvider(String insuranceProviderUid, String planId, String planName, String description, double premium, double deductible, boolean medicalCoverage, boolean dentalCoverage, boolean visionCoverage) throws ExecutionException, InterruptedException {
+    public void addInsuranceProvider(String insuranceProviderUid, String insurancePlanId) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
         String patientUid = UserService.getInstance().globalUid;
 
@@ -68,11 +68,32 @@ public class PatientDashboardService {
 
         // Get Insurance Provider's Database
         DocumentReference insuranceProviderRef = dbFirestore.collection("Insurance Providers").document(insuranceProviderUid);
+        DocumentSnapshot insuranceProviderSnapshot = insuranceProviderRef.get().get();
+        List<Map<String, Object>> insurancePlans = (List<Map<String, Object>>) insuranceProviderSnapshot.get("insurancePlans");
+        String planName = null;
+        String description = null;
+        Double premium = null;
+        Boolean medicalCoverage = null;
+        Boolean visionCoverage = null;
+        Double deductible = null;
+        Boolean dentalCoverage = null;
+        for (Map<String, Object> plan : insurancePlans) {
+            String planId = (String) plan.get("planId");
+            if (planId.equals(insurancePlanId)) {
+                planName = (String) plan.get("planName");
+                description = (String) plan.get("description");
+                premium = (Double) plan.get("premium");
+                deductible = (Double) plan.get("deductible");
+                medicalCoverage = (Boolean) plan.get("medicalCoverage");
+                dentalCoverage = (Boolean) plan.get("dentalCoverage");
+                visionCoverage = (Boolean) plan.get("visionCoverage");
+                break;
+            }
+        }
 
-        // Add plan to patient's database
         Map<String, Object> addInsurancePlan = new HashMap<>();
         addInsurancePlan.put("insuranceProviderUid", insuranceProviderUid);
-        addInsurancePlan.put("insurancePlanId", planId);
+        addInsurancePlan.put("insurancePlanId", insurancePlanId);
         addInsurancePlan.put("planName", planName);
         addInsurancePlan.put("description", description);
         addInsurancePlan.put("premium", premium);
