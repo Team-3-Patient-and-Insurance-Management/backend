@@ -91,7 +91,7 @@ public class UserService {
             this.globalUid = decodedToken.getUid();
             this.globalEmail = decodedToken.getEmail();
             User user = getUser(this.globalUid);
-            return "True";
+            return "patient";
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
             return "Error signing in user: " + e.getMessage();
