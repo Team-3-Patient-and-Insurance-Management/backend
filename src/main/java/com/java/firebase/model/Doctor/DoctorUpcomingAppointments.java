@@ -8,7 +8,7 @@ import java.util.Map;
 public class DoctorUpcomingAppointments {
     private String patientName;
     private String patientUid;
-    private String bookingTime;
+    private String time;
     private String closePhysicalContact;
     private String experiencedSymptoms;
     private String positiveCovid90Days;
@@ -16,10 +16,10 @@ public class DoctorUpcomingAppointments {
     private String wantCovidTest;
     private Date date;
 
-    public DoctorUpcomingAppointments(String patientName, String patientUid, String bookingTime, String closePhysicalContact, String experiencedSymptoms, String positiveCovid90Days, String selfMonitor, String wantCovidTest, Date date) {
+    public DoctorUpcomingAppointments(String patientName, String patientUid, String time, String closePhysicalContact, String experiencedSymptoms, String positiveCovid90Days, String selfMonitor, String wantCovidTest, Date date) {
         this.patientName = patientName;
         this.patientUid = patientUid;
-        this.bookingTime = bookingTime;
+        this.time = time;
         this.closePhysicalContact = closePhysicalContact;
         this.experiencedSymptoms = experiencedSymptoms;
         this.positiveCovid90Days = positiveCovid90Days;
@@ -43,11 +43,11 @@ public class DoctorUpcomingAppointments {
     public void setPatientUid(String patientUid) {
         this.patientUid = patientUid;
     }
-    public String getBookingTime() {
-        return bookingTime;
+    public String getTime() {
+        return time;
     }
-    public void setBookingTime(String bookingTime) {
-        this.bookingTime = bookingTime;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getClosePhysicalContact() {
