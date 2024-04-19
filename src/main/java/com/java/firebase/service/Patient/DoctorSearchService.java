@@ -19,14 +19,14 @@ public class DoctorSearchService {
         Query query = doctorsCollection;
 
         if (partialName != null && !partialName.isEmpty()) {
-            String partialNameLower = partialName;
+            String partialNameLower = partialName.toLowerCase();
             String partialNameUpper = partialNameLower + "\uf8ff";
             query = query.whereGreaterThanOrEqualTo("fullName", partialNameLower)
                     .whereLessThan("fullName", partialNameUpper);
         }
 
         if (specialization != null && !specialization.isEmpty()) {
-            String specializationLower = specialization;
+            String specializationLower = specialization.toLowerCase();
             String specializationUpper = specializationLower + "\uf8ff";
             query = query.whereGreaterThanOrEqualTo("specialization", specializationLower)
                     .whereLessThan("specialization", specializationUpper);
