@@ -10,6 +10,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String fullName;
+    private String fullNameLower;
+
     private String gender;
     private String phoneNumber;
     private Date dateOfBirth;
@@ -28,6 +30,7 @@ public class User {
     // Doctor fields
     private String doctorLicense;
     private String specialization;
+    private String specializationLower;
     private Boolean supportCovid;
     private List<String> appointmentTimes;
 
@@ -48,6 +51,7 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.fullName = firstName + " " + lastName;
+        this.fullNameLower = fullName.toLowerCase();
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
@@ -60,6 +64,7 @@ public class User {
         this.role = role;
         this.doctorLicense = doctorLicense;
         this.specialization = specialization;
+        this.specializationLower = specialization.toLowerCase();
         this.supportCovid = supportCovid;
         this.company = company;
         this.companyLicense = companyLicense;
@@ -84,6 +89,12 @@ public class User {
     }
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+    public String getFullNameLower() {
+        return fullNameLower;
+    }
+    public void setFullNameLower(String fullNameLower) {
+        this.fullNameLower = fullNameLower.toLowerCase();
     }
     public String getGender() {
         return gender;
@@ -161,6 +172,12 @@ public class User {
     }
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
+    }
+    public String getSpecializationLower() {
+        return specializationLower;
+    }
+    public void setSpecializationLower(String specializationLower) {
+        this.specializationLower = specializationLower.toLowerCase();
     }
     public Boolean getSupportCovid() {
         return supportCovid;

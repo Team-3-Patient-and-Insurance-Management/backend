@@ -20,16 +20,14 @@ public class DoctorSearchService {
 
         if (partialName != null && !partialName.isEmpty()) {
             String partialNameLower = partialName.toLowerCase();
-            String partialNameUpper = partialNameLower + "\uf8ff";
-            query = query.whereGreaterThanOrEqualTo("fullName", partialNameLower)
-                    .whereLessThan("fullName", partialNameUpper);
+            Query queryLower = doctorsCollection.whereGreaterThanOrEqualTo("fullNameLower", partialNameLower)
+                    .whereLessThan("fullNameLower", partialNameLower + "\uf8ff");
+            query = queryLower;
         }
 
         if (specialization != null && !specialization.isEmpty()) {
             String specializationLower = specialization.toLowerCase();
-            String specializationUpper = specializationLower + "\uf8ff";
-            query = query.whereGreaterThanOrEqualTo("specialization", specializationLower)
-                    .whereLessThan("specialization", specializationUpper);
+            query = query.whereEqualTo("specializationLower", specializationLower);
         }
 
         if (covidSupport) {
