@@ -39,6 +39,11 @@ public class UserDatabaseController {
     public User getUser() throws ExecutionException, InterruptedException {
         return userService.getUser();
     }
+
+    @GetMapping("/getUserID")
+    public User getUserID(@RequestParam String userID) throws ExecutionException, InterruptedException {
+        return userService.getUser(userID);
+    }
     @PutMapping("/updateUser")
     public ResponseEntity<String> updateUser(@RequestBody User newUser) {
         return userService.updateUser(newUser);
