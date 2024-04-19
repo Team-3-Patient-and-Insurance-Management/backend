@@ -34,7 +34,7 @@ public class DoctorDashboardService {
 
     public Patient getPatientDetails(String patientUid) throws ExecutionException, InterruptedException {
         Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference patientRef = dbFirestore.collection("Patients").document(UserService.getGlobalUid());
+        DocumentReference patientRef = dbFirestore.collection("Patients").document(patientUid);
         DocumentSnapshot patientSnapshot = patientRef.get().get();
         Patient patient = patientSnapshot.toObject(Patient.class);
         if (patient != null) {
