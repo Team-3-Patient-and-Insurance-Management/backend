@@ -51,7 +51,11 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.fullName = firstName + " " + lastName;
-        this.fullNameLower = fullName.toLowerCase();
+        if (this.fullName != null) {
+            this.fullNameLower = fullName.toLowerCase();
+        } else {
+            this.fullNameLower = null;
+        }
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
@@ -64,7 +68,11 @@ public class User {
         this.role = role;
         this.doctorLicense = doctorLicense;
         this.specialization = specialization;
-        this.specializationLower = specialization.toLowerCase();
+        if (this.specialization != null) {
+            this.specializationLower = specialization.toLowerCase();
+        } else {
+            this.specializationLower = null;
+        }
         this.supportCovid = supportCovid;
         this.company = company;
         this.companyLicense = companyLicense;
@@ -94,7 +102,11 @@ public class User {
         return fullNameLower;
     }
     public void setFullNameLower(String fullNameLower) {
-        this.fullNameLower = fullNameLower.toLowerCase();
+        if (this.fullNameLower != null) {
+            this.fullNameLower = fullNameLower.toLowerCase();
+        } else {
+            this.fullNameLower = null;
+        }
     }
     public String getGender() {
         return gender;
@@ -177,7 +189,11 @@ public class User {
         return specializationLower;
     }
     public void setSpecializationLower(String specializationLower) {
-        this.specializationLower = specializationLower.toLowerCase();
+        if (this.specializationLower != null) {
+            this.specializationLower = specializationLower.toLowerCase();
+        } else {
+            this.specializationLower = null;
+        }
     }
     public Boolean getSupportCovid() {
         return supportCovid;
