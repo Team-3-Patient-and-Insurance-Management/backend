@@ -105,7 +105,7 @@ public class UserService {
             this.globalUid = decodedToken.getUid();
             this.globalEmail = decodedToken.getEmail();
             User user = getUser(this.globalUid);
-            return user.getRole();
+            return Twilio2FAController.generateOTP(user.getPhoneNumber());
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
             return "Error signing in user: " + e.getMessage();
