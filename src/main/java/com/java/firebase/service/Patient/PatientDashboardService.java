@@ -67,6 +67,7 @@ public class PatientDashboardService {
         DocumentReference patientRef = dbFirestore.collection("Patients").document(patientUid);
         DocumentSnapshot patientSnapshot = patientRef.get().get();
         String patientName = patientSnapshot.getString("fullName");
+        String profilePictureUrl = patientSnapshot.getString("profilePictureUrl");
 
         // Get Insurance Provider's Database
         DocumentReference insuranceProviderRef = dbFirestore.collection("Insurance Providers").document(insuranceProviderUid);
@@ -107,6 +108,7 @@ public class PatientDashboardService {
 
         // Add patient to insurance provider's database
         Map<String, Object> addPatient = new HashMap<>();
+        addPatient.put("profilePictureUrl", profilePictureUrl);
         addPatient.put("patientUid", patientUid);
         addPatient.put("patientName", patientName);
         addPatient.put("planName", planName);
@@ -122,6 +124,7 @@ public class PatientDashboardService {
         Map<String, Object> doctorReview = new HashMap<>();
         doctorReview.put("title", title);
         doctorReview.put("patientName", patientName);
+        doctorReview.put("uid", UserService.getGlobalUid());
         doctorReview.put("review", review);
         doctorReview.put("stars", stars);
 
