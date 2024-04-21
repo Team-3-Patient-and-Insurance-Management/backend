@@ -1,11 +1,18 @@
 package com.java.firebase.model.Doctor;
 
 public class DoctorRatings {
+    private String uid;
     private String title;
     private String patientName;
     private String stars;
     private String review;
 
+    public String getUid() {
+        return uid;
+    }
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
     public String getTitle() {
         return title;
     }
