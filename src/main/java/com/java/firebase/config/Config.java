@@ -22,7 +22,11 @@ public class Config implements WebMvcConfigurer {
                         "https://patientinsurancemanagement.web.app",
                         "https://patientinsurancemanagement.firebaseapp.com",
                         "https://team-3-patient-and-insurance-management.github.io/frontend/",
-                        "https://team-3-patient-and-insurance-management.github.io"
+                        "https://team-3-patient-and-insurance-management.github.io",
+                        "https://iuteam3.github.io/frontend/",
+                        "https://iuteam3.github.io/frontend",
+                        "iuteam3.github.io/frontend/",
+                        "iuteam3.github.io/frontend"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
