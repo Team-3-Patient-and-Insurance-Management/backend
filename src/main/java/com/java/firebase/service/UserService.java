@@ -274,6 +274,7 @@ public class UserService {
             // Update the common user fields
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setLastName(updatedUser.getLastName());
+            existingUser.setProfilePictureUrl(updatedUser.getProfilePictureUrl());
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
             existingUser.setDateOfBirth(updatedUser.getDateOfBirth());
             existingUser.setStreetAddress(updatedUser.getStreetAddress());
