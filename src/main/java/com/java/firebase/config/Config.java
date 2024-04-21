@@ -26,7 +26,10 @@ public class Config implements WebMvcConfigurer {
                         "https://iuteam3.github.io/frontend/",
                         "https://iuteam3.github.io/frontend",
                         "iuteam3.github.io/frontend/",
-                        "iuteam3.github.io/frontend"
+                        "iuteam3.github.io/frontend",
+                        "https://frontend-1-hmaf.onrender.com"
+
+
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
