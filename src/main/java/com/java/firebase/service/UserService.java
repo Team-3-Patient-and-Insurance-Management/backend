@@ -261,11 +261,6 @@ public class UserService {
             if ("doctor".equals(role)) {
                 existingUser.setDoctorLicense(updatedUser.getDoctorLicense());
                 existingUser.setSpecialization(updatedUser.getSpecialization());
-                if (updatedUser.getSpecializationLower() == null || updatedUser.getSpecializationLower().isEmpty()) {
-                    existingUser.setSpecializationLower(updatedUser.getSpecialization().toLowerCase());
-                } else {
-                    existingUser.setSpecializationLower(updatedUser.getSpecializationLower());
-                }
             } else if ("insuranceProvider".equals(role)) {
                 existingUser.setCompany(updatedUser.getCompany());
                 existingUser.setCompanyLicense(updatedUser.getCompanyLicense());
@@ -283,11 +278,6 @@ public class UserService {
             existingUser.setCity(updatedUser.getCity());
             existingUser.setZipCode(updatedUser.getZipCode());
             existingUser.setFullName(updatedUser.getFirstName() + " " + updatedUser.getLastName());
-            if (updatedUser.getFullNameLower() == null || updatedUser.getFullNameLower().isEmpty()) {
-                existingUser.setFullNameLower(updatedUser.getFirstName().toLowerCase() + " " + updatedUser.getLastName().toLowerCase());
-            } else {
-                existingUser.setFullNameLower(updatedUser.getFullNameLower());
-            }
 
             // Determine the role collection
             String roleCollection = getRoleCollection(role);
